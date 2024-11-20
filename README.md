@@ -62,7 +62,7 @@ npm run preview
 ```
 
 ## Project Structure
-
+```
 src/
 ├── components/ # React components
 ├── config/ # Configuration files
@@ -70,7 +70,7 @@ src/
 ├── hooks/ # Custom React hooks
 ├── utils/ # Utility functions
 └── theme.js # Chakra UI theme customization
-
+```
 
 ## Key Components
 
