@@ -100,6 +100,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - [Alchemy University](https://university.alchemy.com) for the inspiration and NFT contract
-- [Chakra UI](https://chakra-ui.com) for the component library
 - [Alchemy SDK](https://docs.alchemy.com/reference/alchemy-sdk-quickstart) for blockchain interaction
 
