@@ -7,9 +7,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      'process.env.ALCHEMY_API_KEY': JSON.stringify(env.ALCHEMY_API_KEY),
-      'process.env.NETWORK': JSON.stringify(env.NETWORK),
-      'process.env.CONTRACT_ADDRESS': JSON.stringify(env.CONTRACT_ADDRESS)
+      'process.env.ALCHEMY_API_KEY': JSON.stringify(process.env.ALCHEMY_API_KEY || env.ALCHEMY_API_KEY),
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK || env.NETWORK),
+      'process.env.CONTRACT_ADDRESS': JSON.stringify(process.env.CONTRACT_ADDRESS || env.CONTRACT_ADDRESS)
     },
     resolve: {
       alias: {
