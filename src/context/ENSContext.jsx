@@ -17,14 +17,11 @@ export const ENSProvider = ({ children }) => {
   const lookupENS = async (address) => {
     // Check if we already have this address cached
     if (ensCache.has(address)) {
-      console.log(`Using cached ENS for ${address}:`, ensCache.get(address));
       return ensCache.get(address);
     }
 
     try {
-      console.log(`Fetching ENS for ${address}`);
       const ensName = await mainnetAlchemy.core.lookupAddress(address);
-      // Update cache with the new ENS name (even if it's null)
       setENSCache(prev => {
         const newCache = new Map(prev);
         newCache.set(address, ensName);
@@ -32,8 +29,6 @@ export const ENSProvider = ({ children }) => {
       });
       return ensName;
     } catch (err) {
-      console.warn(`Error fetching ENS for ${address}:`, err);
-      // Cache the error result as null to avoid retrying
       setENSCache(prev => {
         const newCache = new Map(prev);
         newCache.set(address, null);

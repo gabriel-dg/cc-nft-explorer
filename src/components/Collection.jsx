@@ -36,7 +36,6 @@ const Collection = () => {
       const metadata = await response.json();
       return metadata;
     } catch (err) {
-      console.error('Error fetching metadata from URI:', err);
       return null;
     }
   };
@@ -64,11 +63,9 @@ const Collection = () => {
         });
       });
 
-      // Process NFTs sequentially to avoid rate limiting
       const processedNfts = nftResponse.nfts.map((nft, index) => {
         setLoadedCount(index + 1);
         
-        // Extract date and topic from attributes array
         const attributes = nft.raw?.metadata?.attributes || [];
         const date = attributes.find(attr => attr.trait_type === 'Date')?.value || 'Unknown Date';
         const topic = attributes.find(attr => attr.trait_type === 'Topic')?.value || 'Unknown Topic';
@@ -149,7 +146,6 @@ const Collection = () => {
       
       setEnsLoadingComplete(true);
     } catch (err) {
-      console.error('Error fetching owners:', err);
       setIsModalLoading(false);
       setEnsLoadingComplete(true);
     }

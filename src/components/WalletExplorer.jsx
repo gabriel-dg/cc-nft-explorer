@@ -58,18 +58,10 @@ const WalletExplorer = () => {
         omitMetadata: false,
       });
 
-      console.log('Raw NFT Response:', response);
-      console.log('First NFT raw metadata:', response.ownedNfts[0]?.raw);
-      console.log('First NFT attributes:', response.ownedNfts[0]?.raw?.metadata?.attributes);
-
       return response.ownedNfts.map(nft => {
         const attributes = nft.raw?.metadata?.attributes || [];
-        console.log(`NFT ${nft.tokenId} attributes:`, attributes);
-        
         const date = attributes.find(attr => attr.trait_type === 'Date')?.value || 'Unknown Date';
         const topic = attributes.find(attr => attr.trait_type === 'Topic')?.value || 'Unknown Topic';
-
-        console.log(`NFT ${nft.tokenId} extracted values:`, { date, topic });
 
         return {
           tokenId: nft.tokenId,
