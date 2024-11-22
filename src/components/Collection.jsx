@@ -13,6 +13,7 @@ import { getPolygonScanUrl } from '../utils/constants';
 
 const Collection = () => {
   const [nfts, setNfts] = useState([]);
+  const [filteredNfts, setFilteredNfts] = useState([]);
   const [selectedNft, setSelectedNft] = useState(null);
   const [selectedNftOwners, setSelectedNftOwners] = useState([]);
   const [isModalLoading, setIsModalLoading] = useState(false);
@@ -85,7 +86,10 @@ const Collection = () => {
       return processedNfts;
     });
 
-    if (result) setNfts(result);
+    if (result) {
+      setNfts(result);
+      setFilteredNfts(result);
+    }
   };
 
   const handleOwnersClick = async (nft) => {
@@ -192,11 +196,17 @@ const Collection = () => {
           placeholder="Search by Token ID or Title..."
           onChange={(e) => {
             const value = e.target.value.toLowerCase();
-            const filtered = nfts.filter(nft => 
-              nft.title.toLowerCase().includes(value) || 
-              nft.tokenId.includes(value)
-            );
-            setNfts(filtered);
+            if (!value.trim()) {
+              // If search is empty, show all NFTs
+              setFilteredNfts(nfts);
+            } else {
+              // Filter NFTs based on search
+              const filtered = nfts.filter(nft => 
+                nft.title.toLowerCase().includes(value) || 
+                nft.tokenId.includes(value)
+              );
+              setFilteredNfts(filtered);
+            }
           }}
           size="lg"
           bg={colorMode === 'dark' ? 'gray.700' : 'white'}
@@ -208,7 +218,7 @@ const Collection = () => {
       </Chakra.Box>
 
       <Chakra.SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-        {nfts.map((nft) => (
+        {filteredNfts.map((nft) => (
           <NFTCard
             key={nft.tokenId}
             nft={nft}
