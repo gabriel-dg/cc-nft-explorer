@@ -29,6 +29,17 @@ const Collection = () => {
     fetchNFTs();
   }, []);
 
+  const fetchMetadataFromUri = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const metadata = await response.json();
+      return metadata;
+    } catch (err) {
+      console.error('Error fetching metadata from URI:', err);
+      return null;
+    }
+  };
+
   const fetchNFTs = async () => {
     const result = await fetchNFTData(async () => {
       const [nftResponse, ownersResponse] = await Promise.all([
@@ -52,13 +63,22 @@ const Collection = () => {
         });
       });
 
+      // Process NFTs sequentially to avoid rate limiting
       const processedNfts = nftResponse.nfts.map((nft, index) => {
         setLoadedCount(index + 1);
+        
+        // Extract date and topic from attributes array
+        const attributes = nft.raw?.metadata?.attributes || [];
+        const date = attributes.find(attr => attr.trait_type === 'Date')?.value || 'Unknown Date';
+        const topic = attributes.find(attr => attr.trait_type === 'Topic')?.value || 'Unknown Topic';
+
         return {
           tokenId: nft.tokenId,
           image: nft.image?.thumbnailUrl || nft.image?.cachedUrl || nft.image?.originalUrl || null,
           title: nft.title || `Token #${nft.tokenId}`,
-          ownerCount: ownerCountMap.get(nft.tokenId) || 0
+          ownerCount: ownerCountMap.get(nft.tokenId) || 0,
+          date,
+          topic
         };
       }).sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
 
