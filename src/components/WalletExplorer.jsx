@@ -58,12 +58,20 @@ const WalletExplorer = () => {
         omitMetadata: false,
       });
 
-      return response.ownedNfts.map(nft => ({
-        tokenId: nft.tokenId,
-        image: nft.image?.thumbnailUrl || nft.image?.cachedUrl || nft.image?.originalUrl || null,
-        title: nft.title || `Token #${nft.tokenId}`,
-        balance: nft.balance
-      })).sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
+      return response.ownedNfts.map(nft => {
+        const attributes = nft.raw?.metadata?.attributes || [];
+        const date = attributes.find(attr => attr.trait_type === 'Date')?.value || 'Unknown Date';
+        const topic = attributes.find(attr => attr.trait_type === 'Topic')?.value || 'Unknown Topic';
+
+        return {
+          tokenId: nft.tokenId,
+          image: nft.image?.thumbnailUrl || nft.image?.cachedUrl || nft.image?.originalUrl || null,
+          title: nft.title || `Token #${nft.tokenId}`,
+          balance: nft.balance,
+          date,
+          topic
+        };
+      }).sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
     });
 
     if (result) setNfts(result);
