@@ -195,18 +195,13 @@ const Collection = () => {
         <Chakra.Input
           placeholder="Search by Token ID or Title..."
           onChange={(e) => {
-            const value = e.target.value.toLowerCase();
-            if (!value.trim()) {
-              // If search is empty, show all NFTs
-              setFilteredNfts(nfts);
-            } else {
-              // Filter NFTs based on search
-              const filtered = nfts.filter(nft => 
-                nft.title.toLowerCase().includes(value) || 
-                nft.tokenId.includes(value)
-              );
-              setFilteredNfts(filtered);
-            }
+            const value = e.target.value.toLowerCase().trim();
+            // Always filter from the original nfts array
+            const filtered = nfts.filter(nft => 
+              nft.title.toLowerCase().includes(value) || 
+              nft.tokenId.includes(value)
+            );
+            setFilteredNfts(filtered);
           }}
           size="lg"
           bg={colorMode === 'dark' ? 'gray.700' : 'white'}
