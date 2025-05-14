@@ -20,6 +20,23 @@ A React-based web application for exploring ERC-1155 NFT collections on the Poly
 - React Router DOM
 - Framer Motion
 
+## Alchemy Methods Used
+
+The project utilizes the following Alchemy SDK methods:
+
+- **NFT Methods**:
+  - `alchemy.nft.getNftsForContract()`: Fetches all NFTs for the NFT contract
+  - `alchemy.nft.getOwnersForContract()`: Gets all owners of NFTs in the contract with their token balances
+  - `alchemy.nft.getNftsForOwner()`: Fetches NFTs owned by a specific wallet address
+
+- **ENS Methods**:
+  - `mainnetAlchemy.core.lookupAddress()`: Looks up ENS names for Ethereum addresses
+  - `mainnetAlchemy.core.resolveName()`: Resolves ENS names to Ethereum addresses
+
+The application uses two Alchemy instances:
+- Main instance configured for the Polygon network to interact with the NFT contract
+- Secondary instance configured for Ethereum mainnet for ENS resolution
+
 ## Prerequisites
 
 - Node.js (v14 or higher)
