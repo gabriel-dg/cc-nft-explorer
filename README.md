@@ -1,6 +1,6 @@
-# Alchemy University Community Call NFT Explorer
+# Alchemy Community Call NFT Explorer
 
-A React-based web application for exploring ERC-1155 NFT collections on the Polygon network. This project was developed to showcase NFT collection data from the Alchemy University Community Call NFT contract.
+A React-based web application for exploring ERC-1155 NFT collections on the Polygon network. This project was developed to showcase NFT collection data from the Alchemy Community Call NFT contract.
 
 ## Features
 

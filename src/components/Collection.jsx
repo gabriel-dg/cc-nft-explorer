@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
-import * as Chakra from '@chakra-ui/react';
-import { useColorMode } from '@chakra-ui/react';
-import { alchemy, CONTRACT_ADDRESS } from '../config/alchemy';
-import { useENS } from '../context/ENSContext';
-import NFTCard from './NFTCard';
-import NFTCardSkeleton from './NFTCardSkeleton';
-import { useNFTData } from '../hooks/useNFTData';
-import AnimatedNumber from './AnimatedNumber';
-import ErrorRetry from './ErrorRetry';
-import { LoadingProgress } from './LoadingProgress';
-import { getPolygonScanUrl } from '../utils/constants';
+import { useState, useEffect } from "react";
+import * as Chakra from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/react";
+import { alchemy, CONTRACT_ADDRESS } from "../config/alchemy";
+import { useENS } from "../context/ENSContext";
+import NFTCard from "./NFTCard";
+import NFTCardSkeleton from "./NFTCardSkeleton";
+import { useNFTData } from "../hooks/useNFTData";
+import AnimatedNumber from "./AnimatedNumber";
+import ErrorRetry from "./ErrorRetry";
+import { LoadingProgress } from "./LoadingProgress";
+import { getPolygonScanUrl } from "../utils/constants";
 
 const Collection = () => {
   const [nfts, setNfts] = useState([]);
@@ -20,7 +20,7 @@ const Collection = () => {
   const [ensLoadingComplete, setEnsLoadingComplete] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  
+
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const { lookupENS, getCachedENS, isInCache } = useENS();
   const { loading, error, fetchNFTData } = useNFTData();
@@ -48,37 +48,47 @@ const Collection = () => {
           omitMetadata: false,
         }),
         alchemy.nft.getOwnersForContract(CONTRACT_ADDRESS, {
-          withTokenBalances: true
-        })
+          withTokenBalances: true,
+        }),
       ]);
 
       setTotalCount(nftResponse.nfts.length);
       setLoadedCount(0);
 
       const ownerCountMap = new Map();
-      ownersResponse.owners.forEach(owner => {
-        owner.tokenBalances.forEach(token => {
+      ownersResponse.owners.forEach((owner) => {
+        owner.tokenBalances.forEach((token) => {
           const currentCount = ownerCountMap.get(token.tokenId) || 0;
           ownerCountMap.set(token.tokenId, currentCount + 1);
         });
       });
 
-      const processedNfts = nftResponse.nfts.map((nft, index) => {
-        setLoadedCount(index + 1);
-        
-        const attributes = nft.raw?.metadata?.attributes || [];
-        const date = attributes.find(attr => attr.trait_type === 'Date')?.value || 'Unknown Date';
-        const topic = attributes.find(attr => attr.trait_type === 'Topic')?.value || 'Unknown Topic';
+      const processedNfts = nftResponse.nfts
+        .map((nft, index) => {
+          setLoadedCount(index + 1);
 
-        return {
-          tokenId: nft.tokenId,
-          image: nft.image?.thumbnailUrl || nft.image?.cachedUrl || nft.image?.originalUrl || null,
-          title: nft.title || `Token #${nft.tokenId}`,
-          ownerCount: ownerCountMap.get(nft.tokenId) || 0,
-          date,
-          topic
-        };
-      }).sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
+          const attributes = nft.raw?.metadata?.attributes || [];
+          const date =
+            attributes.find((attr) => attr.trait_type === "Date")?.value ||
+            "Unknown Date";
+          const topic =
+            attributes.find((attr) => attr.trait_type === "Topic")?.value ||
+            "Unknown Topic";
+
+          return {
+            tokenId: nft.tokenId,
+            image:
+              nft.image?.thumbnailUrl ||
+              nft.image?.cachedUrl ||
+              nft.image?.originalUrl ||
+              null,
+            title: nft.title || `Token #${nft.tokenId}`,
+            ownerCount: ownerCountMap.get(nft.tokenId) || 0,
+            date,
+            topic,
+          };
+        })
+        .sort((a, b) => parseInt(b.tokenId) - parseInt(a.tokenId));
 
       return processedNfts;
     });
@@ -96,23 +106,32 @@ const Collection = () => {
     onOpen();
 
     try {
-      const response = await alchemy.nft.getOwnersForContract(CONTRACT_ADDRESS, {
-        withTokenBalances: true
-      });
+      const response = await alchemy.nft.getOwnersForContract(
+        CONTRACT_ADDRESS,
+        {
+          withTokenBalances: true,
+        }
+      );
 
       const tokenOwners = response.owners
-        .filter(owner => owner.tokenBalances.some(token => token.tokenId === nft.tokenId))
-        .map(owner => ({
+        .filter((owner) =>
+          owner.tokenBalances.some((token) => token.tokenId === nft.tokenId)
+        )
+        .map((owner) => ({
           address: owner.ownerAddress,
-          balance: owner.tokenBalances.find(token => token.tokenId === nft.tokenId).balance,
-          ensName: getCachedENS(owner.ownerAddress)
+          balance: owner.tokenBalances.find(
+            (token) => token.tokenId === nft.tokenId
+          ).balance,
+          ensName: getCachedENS(owner.ownerAddress),
         }));
 
       setSelectedNftOwners(tokenOwners);
       setIsModalLoading(false);
 
-      const uncachedOwners = tokenOwners.filter(owner => !isInCache(owner.address));
-      
+      const uncachedOwners = tokenOwners.filter(
+        (owner) => !isInCache(owner.address)
+      );
+
       if (uncachedOwners.length === 0) {
         setEnsLoadingComplete(true);
         return;
@@ -127,11 +146,11 @@ const Collection = () => {
         });
 
         const resolvedBatch = await Promise.all(ensPromises);
-        
-        setSelectedNftOwners(prevOwners => {
+
+        setSelectedNftOwners((prevOwners) => {
           const newOwners = [...prevOwners];
           resolvedBatch.forEach(({ address, ensName }) => {
-            const index = newOwners.findIndex(o => o.address === address);
+            const index = newOwners.findIndex((o) => o.address === address);
             if (index !== -1) {
               newOwners[index] = { ...newOwners[index], ensName };
             }
@@ -140,10 +159,10 @@ const Collection = () => {
         });
 
         if (i + batchSize < uncachedOwners.length) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
-      
+
       setEnsLoadingComplete(true);
     } catch (err) {
       setIsModalLoading(false);
@@ -155,8 +174,12 @@ const Collection = () => {
     return (
       <Chakra.Container py={10}>
         <Chakra.Box mb={8}>
-          <Chakra.Heading size="lg" mb={2}>Collection Explorer</Chakra.Heading>
-          <Chakra.Text color="gray.600">Browse all NFTs in the collection</Chakra.Text>
+          <Chakra.Heading size="lg" mb={2}>
+            Collection Explorer
+          </Chakra.Heading>
+          <Chakra.Text color="gray.600">
+            Browse all NFTs in the collection
+          </Chakra.Text>
         </Chakra.Box>
         <Chakra.SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
           {[...Array(6)].map((_, i) => (
@@ -179,10 +202,10 @@ const Collection = () => {
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2}>Collection Explorer</Chakra.Heading>
-        <Chakra.Text 
-          color={colorMode === 'dark' ? 'gray.300' : 'gray.600'}
-        >
+        <Chakra.Heading size="lg" mb={2}>
+          Collection Explorer
+        </Chakra.Heading>
+        <Chakra.Text color={colorMode === "dark" ? "gray.300" : "gray.600"}>
           Browse all NFTs in the collection
         </Chakra.Text>
       </Chakra.Box>
@@ -193,17 +216,18 @@ const Collection = () => {
           onChange={(e) => {
             const value = e.target.value.toLowerCase().trim();
             // Always filter from the original nfts array
-            const filtered = nfts.filter(nft => 
-              nft.title.toLowerCase().includes(value) || 
-              nft.tokenId.includes(value)
+            const filtered = nfts.filter(
+              (nft) =>
+                nft.title.toLowerCase().includes(value) ||
+                nft.tokenId.includes(value)
             );
             setFilteredNfts(filtered);
           }}
           size="lg"
-          bg={colorMode === 'dark' ? 'gray.700' : 'white'}
-          borderColor={colorMode === 'dark' ? 'gray.600' : 'gray.200'}
+          bg={colorMode === "dark" ? "gray.700" : "white"}
+          borderColor={colorMode === "dark" ? "gray.600" : "gray.200"}
           _hover={{
-            borderColor: colorMode === 'dark' ? 'gray.500' : 'gray.300'
+            borderColor: colorMode === "dark" ? "gray.500" : "gray.300",
           }}
         />
       </Chakra.Box>
@@ -245,14 +269,16 @@ const Collection = () => {
                           <Chakra.Spinner size="xs" ml={2} />
                         )}
                       </Chakra.Th>
-                      <Chakra.Th width="10%" isNumeric>Balance</Chakra.Th>
+                      <Chakra.Th width="10%" isNumeric>
+                        Balance
+                      </Chakra.Th>
                     </Chakra.Tr>
                   </Chakra.Thead>
                   <Chakra.Tbody>
                     {selectedNftOwners.map((owner) => (
                       <Chakra.Tr key={owner.address}>
-                        <Chakra.Td 
-                          fontFamily="mono" 
+                        <Chakra.Td
+                          fontFamily="mono"
                           fontSize="sm"
                           maxW="45%"
                           overflow="hidden"
@@ -264,7 +290,7 @@ const Collection = () => {
                               href={getPolygonScanUrl(owner.address)}
                               isExternal
                               color="purple.500"
-                              _hover={{ textDecoration: 'underline' }}
+                              _hover={{ textDecoration: "underline" }}
                             >
                               {owner.address}
                             </Chakra.Link>
@@ -274,7 +300,7 @@ const Collection = () => {
                           {!ensLoadingComplete && owner.ensName === null ? (
                             <Chakra.Spinner size="xs" />
                           ) : owner.ensName ? (
-                            <Chakra.Text 
+                            <Chakra.Text
                               color="purple.500"
                               overflow="hidden"
                               textOverflow="ellipsis"
@@ -299,9 +325,7 @@ const Collection = () => {
             )}
           </Chakra.ModalBody>
           <Chakra.ModalFooter>
-            <Chakra.Button onClick={onClose}>
-              Close
-            </Chakra.Button>
+            <Chakra.Button onClick={onClose}>Close</Chakra.Button>
           </Chakra.ModalFooter>
         </Chakra.ModalContent>
       </Chakra.Modal>
@@ -309,4 +333,4 @@ const Collection = () => {
   );
 };
 
-export default Collection; 
+export default Collection;
