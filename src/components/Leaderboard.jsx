@@ -217,32 +217,32 @@ const Leaderboard = () => {
               onClick={() => setPage(1)}
               isDisabled={page === 1}
             >
-              First
+              {"<<"}
             </Chakra.Button>
             <Chakra.Button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               isDisabled={page === 1}
             >
-              Previous
+              {"<"}
             </Chakra.Button>
             <Chakra.Button
               variant="outline"
               _hover={{ cursor: "default" }}
               _active={{ bg: "transparent" }}
             >
-              Page {currentPage} of {totalPages}
+             {currentPage} / {totalPages}
             </Chakra.Button>
             <Chakra.Button
               onClick={() => setPage(p => p + 1)}
               isDisabled={page >= totalPages}
             >
-              Next
+              {">"}
             </Chakra.Button>
             <Chakra.Button
               onClick={() => setPage(totalPages)}
               isDisabled={page >= totalPages}
             >
-              Last
+              {">>"}
             </Chakra.Button>
           </Chakra.ButtonGroup>
 
