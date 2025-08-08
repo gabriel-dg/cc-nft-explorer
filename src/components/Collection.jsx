@@ -256,167 +256,196 @@ const Collection = () => {
       {/* Featured Section */}
       {featuredNft && (
         <Chakra.Box mb={8}>
-          <Chakra.Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={6}>
-            {/* Featured NFT */}
-            <MotionBox
-              borderWidth="1px"
-              borderRadius="xl"
-              overflow="hidden"
-              shadow="xl"
-              whileHover={{ 
-                y: -5,
-                boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)"
-              }}
-              transition={{ duration: 0.3 }}
-              bg="whiteAlpha.100"
-              backdropFilter="blur(10px)"
-              borderColor="whiteAlpha.200"
-            >
-              <Chakra.AspectRatio ratio={16/9}>
-                <Chakra.Box position="relative" width="100%" height="100%">
-                  {featuredNft.image ? (
-                    <Chakra.Image
-                      src={featuredNft.image}
-                      alt={featuredNft.title}
-                      objectFit="cover"
-                      width="100%"
-                      height="100%"
-                      fallback={<Chakra.Center h="100%">No Image</Chakra.Center>}
-                    />
-                  ) : (
-                    <Chakra.Center bg="gray.100" h="100%">No Image</Chakra.Center>
-                  )}
-                  
-                  {/* Metadata overlay */}
-                  <Chakra.Box
-                    position="absolute"
-                    top={4}
-                    left={4}
-                    right={4}
-                    bg="rgba(0, 0, 0, 0.7)"
-                    color="white"
-                    p={3}
-                    borderRadius="md"
-                    backdropFilter="blur(10px)"
-                  >
-                    <Chakra.Flex justify="space-between" align="center">
-                      <Chakra.Text fontSize="sm" fontWeight="bold">
-                        {featuredNft.date}
-                      </Chakra.Text>
-                      <Chakra.Text fontSize="sm" fontWeight="bold">
-                        {featuredNft.topic}
-                      </Chakra.Text>
-                    </Chakra.Flex>
-                  </Chakra.Box>
-                </Chakra.Box>
-              </Chakra.AspectRatio>
-              
-              <Chakra.Box p={6}>
-                <Chakra.Heading size="lg" mb={3} noOfLines={2} variant="glow">
-                  {featuredNft.title}
-                </Chakra.Heading>
-                <Chakra.Flex justify="space-between" align="center">
-                  <Chakra.Text 
-                    fontSize="sm"
-                    variant="neon"
-                  >
-                    <Chakra.Text as="span" fontWeight="bold">
-                      ID:
-                    </Chakra.Text>{' '}
-                    {featuredNft.tokenId}
-                  </Chakra.Text>
-                  <Chakra.Button
-                    size="md"
-                    variant="glow"
-                    onClick={() => handleOwnersClick(featuredNft)}
-                  >
-                    {featuredNft.ownerCount} Owners
-                  </Chakra.Button>
-                </Chakra.Flex>
-              </Chakra.Box>
-            </MotionBox>
-
-            {/* Grid of 4 NFTs */}
-            <Chakra.Grid templateColumns="repeat(2, 1fr)" gap={4}>
-              {gridNfts.map((nft) => (
-                <MotionBox
-                  key={nft.tokenId}
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  overflow="hidden"
-                  shadow="md"
-                  whileHover={{ 
-                    y: -3,
-                    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)"
-                  }}
-                  transition={{ duration: 0.2 }}
-                  bg="whiteAlpha.100"
-                  backdropFilter="blur(10px)"
-                  borderColor="whiteAlpha.200"
-                >
-                  <Chakra.AspectRatio ratio={1}>
-                    <Chakra.Box position="relative" width="100%" height="100%">
-                      {nft.image ? (
-                        <Chakra.Image
-                          src={nft.image}
-                          alt={nft.title}
-                          objectFit="cover"
-                          width="100%"
-                          height="100%"
-                          fallback={<Chakra.Center h="100%">No Image</Chakra.Center>}
-                        />
-                      ) : (
-                        <Chakra.Center bg="gray.100" h="100%">No Image</Chakra.Center>
-                      )}
-                      
-                      {/* Metadata overlay */}
-                      <Chakra.Box
-                        position="absolute"
-                        top={2}
-                        left={2}
-                        right={2}
-                        bg="rgba(0, 0, 0, 0.7)"
-                        color="white"
-                        p={2}
-                        borderRadius="sm"
-                        backdropFilter="blur(10px)"
-                      >
-                        <Chakra.Flex justify="space-between" align="center">
-                          <Chakra.Text fontSize="xs" fontWeight="bold">
-                            {nft.date}
-                          </Chakra.Text>
-                          <Chakra.Text fontSize="xs" fontWeight="bold">
-                            {nft.topic}
-                          </Chakra.Text>
-                        </Chakra.Flex>
-                      </Chakra.Box>
+          {/* Mobile Layout - Single Column */}
+          <Chakra.Box display={{ base: "block", lg: "none" }}>
+            <Chakra.VStack spacing={6} align="stretch" w="full">
+              {/* Featured NFT for mobile */}
+              <MotionBox
+                borderWidth="1px"
+                borderRadius="xl"
+                overflow="hidden"
+                shadow="xl"
+                whileHover={{ 
+                  y: -5,
+                  boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)"
+                }}
+                transition={{ duration: 0.3 }}
+                bg="whiteAlpha.100"
+                backdropFilter="blur(10px)"
+                borderColor="whiteAlpha.200"
+                w="full"
+              >
+                <Chakra.AspectRatio ratio={1}>
+                  <Chakra.Box position="relative" width="100%" height="100%">
+                    {featuredNft.image ? (
+                      <Chakra.Image
+                        src={featuredNft.image}
+                        alt={featuredNft.title}
+                        objectFit="cover"
+                        width="100%"
+                        height="100%"
+                        fallback={<Chakra.Center h="100%">No Image</Chakra.Center>}
+                      />
+                    ) : (
+                      <Chakra.Center bg="gray.100" h="100%">No Image</Chakra.Center>
+                    )}
+                    
+                    {/* Metadata overlay */}
+                    <Chakra.Box
+                      position="absolute"
+                      top={4}
+                      left={4}
+                      right={4}
+                      bg="rgba(0, 0, 0, 0.7)"
+                      color="white"
+                      p={3}
+                      borderRadius="md"
+                      backdropFilter="blur(10px)"
+                    >
+                      <Chakra.Flex justify="space-between" align="center">
+                        <Chakra.Text fontSize="sm" fontWeight="bold">
+                          {featuredNft.date}
+                        </Chakra.Text>
+                        <Chakra.Text fontSize="sm" fontWeight="bold">
+                          {featuredNft.topic}
+                        </Chakra.Text>
+                      </Chakra.Flex>
                     </Chakra.Box>
-                  </Chakra.AspectRatio>
-                  
-                  <Chakra.Box p={3}>
-                    <Chakra.Heading size="sm" mb={2} noOfLines={1} variant="glow">
-                      {nft.title}
-                    </Chakra.Heading>
-                    <Chakra.Flex justify="space-between" align="center">
-                      <Chakra.Text 
-                        fontSize="xs"
-                        variant="neon"
-                      >
-                        ID: {nft.tokenId}
-                      </Chakra.Text>
-                      <Chakra.Button
-                        size="xs"
-                        variant="glow"
-                        onClick={() => handleOwnersClick(nft)}
-                      >
-                        {nft.ownerCount}
-                      </Chakra.Button>
-                    </Chakra.Flex>
                   </Chakra.Box>
-                </MotionBox>
+                </Chakra.AspectRatio>
+                
+                <Chakra.Box p={6}>
+                  <Chakra.Heading size="lg" mb={3} noOfLines={2} variant="glow">
+                    {featuredNft.title}
+                  </Chakra.Heading>
+                  <Chakra.Flex justify="space-between" align="center">
+                    <Chakra.Text 
+                      fontSize="sm"
+                      variant="neon"
+                    >
+                      <Chakra.Text as="span" fontWeight="bold">
+                        ID:
+                      </Chakra.Text>{' '}
+                      {featuredNft.tokenId}
+                    </Chakra.Text>
+                    <Chakra.Button
+                      size="md"
+                      variant="glow"
+                      onClick={() => handleOwnersClick(featuredNft)}
+                    >
+                      {featuredNft.ownerCount} Owners
+                    </Chakra.Button>
+                  </Chakra.Flex>
+                </Chakra.Box>
+              </MotionBox>
+
+              {/* Grid NFTs for mobile - Single column */}
+              {gridNfts.map((nft) => (
+                <NFTCard
+                  key={nft.tokenId}
+                  nft={nft}
+                  onClick={handleOwnersClick}
+                  showOwners={true}
+                />
               ))}
+            </Chakra.VStack>
+          </Chakra.Box>
+
+          {/* Desktop Layout - Grid with featured and side NFTs */}
+          <Chakra.Box display={{ base: "none", lg: "block" }}>
+            <Chakra.Grid templateColumns="2fr 2fr" gap={6}>
+              {/* Featured NFT */}
+              <MotionBox
+                borderWidth="1px"
+                borderRadius="xl"
+                overflow="hidden"
+                shadow="xl"
+                whileHover={{ 
+                  y: -5,
+                  boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)"
+                }}
+                transition={{ duration: 0.3 }}
+                bg="whiteAlpha.100"
+                backdropFilter="blur(10px)"
+                borderColor="whiteAlpha.200"
+              >
+                <Chakra.AspectRatio ratio={1}>
+                  <Chakra.Box position="relative" width="100%" height="100%">
+                    {featuredNft.image ? (
+                      <Chakra.Image
+                        src={featuredNft.image}
+                        alt={featuredNft.title}
+                        objectFit="cover"
+                        width="100%"
+                        height="100%"
+                        fallback={<Chakra.Center h="100%">No Image</Chakra.Center>}
+                      />
+                    ) : (
+                      <Chakra.Center bg="gray.100" h="100%">No Image</Chakra.Center>
+                    )}
+                    
+                    {/* Metadata overlay */}
+                    <Chakra.Box
+                      position="absolute"
+                      top={4}
+                      left={4}
+                      right={4}
+                      bg="rgba(0, 0, 0, 0.7)"
+                      color="white"
+                      p={3}
+                      borderRadius="md"
+                      backdropFilter="blur(10px)"
+                    >
+                      <Chakra.Flex justify="space-between" align="center">
+                        <Chakra.Text fontSize="sm" fontWeight="bold">
+                          {featuredNft.date}
+                        </Chakra.Text>
+                        <Chakra.Text fontSize="sm" fontWeight="bold">
+                          {featuredNft.topic}
+                        </Chakra.Text>
+                      </Chakra.Flex>
+                    </Chakra.Box>
+                  </Chakra.Box>
+                </Chakra.AspectRatio>
+                
+                <Chakra.Box p={6}>
+                  <Chakra.Heading size="lg" mb={3} noOfLines={2} variant="glow">
+                    {featuredNft.title}
+                  </Chakra.Heading>
+                  <Chakra.Flex justify="space-between" align="center">
+                    <Chakra.Text 
+                      fontSize="sm"
+                      variant="neon"
+                    >
+                      <Chakra.Text as="span" fontWeight="bold">
+                        ID:
+                      </Chakra.Text>{' '}
+                      {featuredNft.tokenId}
+                    </Chakra.Text>
+                    <Chakra.Button
+                      size="md"
+                      variant="glow"
+                      onClick={() => handleOwnersClick(featuredNft)}
+                    >
+                      {featuredNft.ownerCount} Owners
+                    </Chakra.Button>
+                  </Chakra.Flex>
+                </Chakra.Box>
+              </MotionBox>
+
+              {/* Grid of 4 NFTs */}
+              <Chakra.Grid templateColumns="repeat(2, 1fr)" gap={4}>
+                {gridNfts.map((nft) => (
+                  <NFTCard
+                    key={nft.tokenId}
+                    nft={nft}
+                    onClick={handleOwnersClick}
+                    showOwners={true}
+                  />
+                ))}
+              </Chakra.Grid>
             </Chakra.Grid>
-          </Chakra.Grid>
+          </Chakra.Box>
         </Chakra.Box>
       )}
 
@@ -448,10 +477,10 @@ const Collection = () => {
               isDisabled={currentPage === 1}
               variant="neon"
             >
-              Previous
+              {"<"}
             </Chakra.Button>
             
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+            {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
               const page = i + 1;
               return (
                 <Chakra.Button
@@ -469,7 +498,7 @@ const Collection = () => {
               isDisabled={currentPage === totalPages}
               variant="neon"
             >
-              Next
+              {">"}
             </Chakra.Button>
           </Chakra.ButtonGroup>
         </Chakra.Box>

@@ -4,7 +4,7 @@ const theme = extendTheme({
   styles: {
     global: (props) => ({
       body: {
-        bg: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+        bg: '#0e0b27',
         color: 'white',
         minH: '100vh',
       },
@@ -15,9 +15,10 @@ const theme = extendTheme({
       primary: '#6366f1', // Purple glow
       secondary: '#8b5cf6', // Lighter purple
       accent: '#06b6d4', // Cyan for neon effect
-      dark: '#1a1a2e', // Dark purple background
+      dark: '#0e0b27', // Dark purple background
       darker: '#16213e', // Darker purple
       darkest: '#0f3460', // Darkest purple
+      button: '#1a1738', // Button color
     },
   },
   components: {
@@ -48,11 +49,11 @@ const theme = extendTheme({
           },
         },
         glow: {
-          bg: 'brand.primary',
+          bg: 'brand.button',
           color: 'white',
-          boxShadow: '0 0 10px rgba(99, 102, 241, 0.5)',
+          boxShadow: '0 0 10px rgba(26, 23, 56, 0.5)',
           _hover: {
-            boxShadow: '0 0 20px rgba(99, 102, 241, 0.8)',
+            boxShadow: '0 0 20px rgba(26, 23, 56, 0.8)',
             transform: 'translateY(-2px)',
           },
         },

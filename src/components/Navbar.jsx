@@ -24,7 +24,7 @@ const Navbar = () => {
   return (
     <>
       <Chakra.Box
-        bg="brand.dark"
+        bg="#0e0b27"
         px={4}
         position="sticky"
         top={0}
@@ -88,7 +88,7 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         <Chakra.Collapse in={isOpen} animateOpacity>
           <Chakra.Box
-            bg="brand.dark"
+            bg="#0e0b27"
             borderTop="1px"
             borderColor="whiteAlpha.200"
             py={4}

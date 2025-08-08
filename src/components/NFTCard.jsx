@@ -23,6 +23,7 @@ const NFTCard = ({ nft, onClick, showOwners = false }) => {
       bg="whiteAlpha.100"
       backdropFilter="blur(10px)"
       borderColor="whiteAlpha.200"
+      w="full"
     >
       <Chakra.AspectRatio ratio={1}>
         <Chakra.Box position="relative" width="100%" height="100%">
