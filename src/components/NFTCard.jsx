@@ -50,7 +50,7 @@ const NFTCard = ({ nft, onClick, showOwners = false }) => {
             )}
           </Chakra.Link>
           
-          {/* Metadata overlay */}
+          {/* Metadata overlay top (date/topic) */}
           <Chakra.Box
             position="absolute"
             top={2}
@@ -71,42 +71,37 @@ const NFTCard = ({ nft, onClick, showOwners = false }) => {
               </Chakra.Text>
             </Chakra.Flex>
           </Chakra.Box>
+
+          {/* Metadata overlay bottom (title, id, owners) */}
+          <Chakra.Box
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+            bg="rgba(0,0,0,0.65)"
+            color="white"
+            px={3}
+            py={3}
+          >
+            <Chakra.Heading size="md" mb={2} noOfLines={1}>
+              {nft.title}
+            </Chakra.Heading>
+            <Chakra.Flex justify="space-between" align="center">
+              <Chakra.Text fontSize="xs">
+                <Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text>{' '}
+                {nft.tokenId}
+              </Chakra.Text>
+              {showOwners ? (
+                <Chakra.Button size="xs" colorScheme="purple" onClick={() => onClick?.(nft)}>
+                  {nft.ownerCount} Owners
+                </Chakra.Button>
+              ) : (
+                <Chakra.Badge colorScheme="purple">Balance: {nft.balance}</Chakra.Badge>
+              )}
+            </Chakra.Flex>
+          </Chakra.Box>
         </Chakra.Box>
       </Chakra.AspectRatio>
-
-      <Chakra.Box 
-        p={4}
-        bg="transparent"
-        color="white"
-      >
-        <Chakra.Heading size="md" mb={2} noOfLines={1} variant="glow">
-          {nft.title}
-        </Chakra.Heading>
-        <Chakra.Flex justify="space-between" align="center">
-          <Chakra.Text 
-            fontSize="xs"
-            variant="neon"
-          >
-            <Chakra.Text as="span" fontWeight="bold">
-              ID:
-            </Chakra.Text>{' '}
-            {nft.tokenId}
-          </Chakra.Text>
-          {showOwners ? (
-            <Chakra.Button
-              size="sm"
-              variant="glow"
-              onClick={() => onClick?.(nft)}
-            >
-              {nft.ownerCount} Owners
-            </Chakra.Button>
-          ) : (
-            <Chakra.Badge colorScheme="purple">
-              Balance: {nft.balance}
-            </Chakra.Badge>
-          )}
-        </Chakra.Flex>
-      </Chakra.Box>
     </MotionBox>
   );
 };

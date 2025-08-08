@@ -311,34 +311,35 @@ const Collection = () => {
                         </Chakra.Text>
                       </Chakra.Flex>
                     </Chakra.Box>
+
+                    {/* Bottom overlay: title, id, owners (mobile) */}
+                    <Chakra.Box
+                      position="absolute"
+                      bottom={0}
+                      left={0}
+                      right={0}
+                      bg="rgba(0,0,0,0.65)"
+                      color="white"
+                      px={4}
+                      py={4}
+                    >
+                      <Chakra.Heading size="md" mb={2} noOfLines={1}>
+                        {featuredNft.title}
+                      </Chakra.Heading>
+                      <Chakra.Flex justify="space-between" align="center">
+                        <Chakra.Text fontSize="xs">
+                          <Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text>{' '}
+                          {featuredNft.tokenId}
+                        </Chakra.Text>
+                        <Chakra.Button size="xs" variant="glow" onClick={() => handleOwnersClick(featuredNft)}>
+                          {featuredNft.ownerCount} Owners
+                        </Chakra.Button>
+                      </Chakra.Flex>
+                    </Chakra.Box>
                   </Chakra.Box>
                 </Chakra.AspectRatio>
                 
-                <Chakra.Box p={6}>
-                  <Chakra.Heading size="lg" mb={3} noOfLines={2} variant="glow">
-                    {featuredNft.title}
-                  </Chakra.Heading>
-                  <Chakra.Flex justify="space-between" align="center">
-                    <Chakra.Text 
-                      fontSize="sm"
-                      variant="neon"
-                    >
-                      <Chakra.Text as="span" fontWeight="bold">
-                        ID:
-                      </Chakra.Text>{' '}
-                      {featuredNft.tokenId}
-                    </Chakra.Text>
-                    <Chakra.Button
-                      size="md"
-                      variant="glow"
-                      onClick={() => handleOwnersClick(featuredNft)}
-                    >
-                      {featuredNft.ownerCount} Owners
-                    </Chakra.Button>
-                  </Chakra.Flex>
-                </Chakra.Box>
               </MotionBox>
-
               {/* Grid NFTs for mobile - Single column */}
               {gridNfts.map((nft) => (
                 <NFTCard
@@ -405,34 +406,35 @@ const Collection = () => {
                         </Chakra.Text>
                       </Chakra.Flex>
                     </Chakra.Box>
+
+                    {/* Bottom overlay: title, id, owners (desktop) */}
+                    <Chakra.Box
+                      position="absolute"
+                      bottom={0}
+                      left={0}
+                      right={0}
+                      bg="rgba(0,0,0,0.65)"
+                      color="white"
+                      px={5}
+                      py={4}
+                    >
+                      <Chakra.Heading size="md" mb={2} noOfLines={2}>
+                        {featuredNft.title}
+                      </Chakra.Heading>
+                      <Chakra.Flex justify="space-between" align="center">
+                        <Chakra.Text fontSize="xs">
+                          <Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text>{' '}
+                          {featuredNft.tokenId}
+                        </Chakra.Text>
+                        <Chakra.Button size="sm" variant="glow" onClick={() => handleOwnersClick(featuredNft)}>
+                          {featuredNft.ownerCount} Owners
+                        </Chakra.Button>
+                      </Chakra.Flex>
+                    </Chakra.Box>
                   </Chakra.Box>
                 </Chakra.AspectRatio>
                 
-                <Chakra.Box p={6}>
-                  <Chakra.Heading size="lg" mb={3} noOfLines={2} variant="glow">
-                    {featuredNft.title}
-                  </Chakra.Heading>
-                  <Chakra.Flex justify="space-between" align="center">
-                    <Chakra.Text 
-                      fontSize="sm"
-                      variant="neon"
-                    >
-                      <Chakra.Text as="span" fontWeight="bold">
-                        ID:
-                      </Chakra.Text>{' '}
-                      {featuredNft.tokenId}
-                    </Chakra.Text>
-                    <Chakra.Button
-                      size="md"
-                      variant="glow"
-                      onClick={() => handleOwnersClick(featuredNft)}
-                    >
-                      {featuredNft.ownerCount} Owners
-                    </Chakra.Button>
-                  </Chakra.Flex>
-                </Chakra.Box>
               </MotionBox>
-
               {/* Grid of 4 NFTs */}
               <Chakra.Grid templateColumns="repeat(2, 1fr)" gap={4}>
                 {gridNfts.map((nft) => (
