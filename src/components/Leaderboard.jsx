@@ -148,14 +148,20 @@ const Leaderboard = () => {
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2}>NFT Leaderboard</Chakra.Heading>
-        <Chakra.Text color={colorMode === 'dark' ? 'gray.300' : 'gray.600'}>
+        <Chakra.Heading size="lg" mb={2} variant="glow">NFT Leaderboard</Chakra.Heading>
+        <Chakra.Text variant="neon">
           Top holders of the collection
         </Chakra.Text>
       </Chakra.Box>
       
-      <Chakra.TableContainer>
-        <Chakra.Table variant="simple" bg={colorMode === 'dark' ? 'gray.700' : 'white'}>
+      <Chakra.TableContainer
+        bg="whiteAlpha.100"
+        border="1px solid"
+        borderColor="whiteAlpha.200"
+        borderRadius="lg"
+        backdropFilter="blur(10px)"
+      >
+        <Chakra.Table variant="simple" bg="transparent">
           <Chakra.Thead>
             <Chakra.Tr>
               <Chakra.Th>Position</Chakra.Th>
@@ -185,21 +191,21 @@ const Leaderboard = () => {
                     <Chakra.Link
                       href={getPolygonScanUrl(owner.address)}
                       isExternal
-                      color="purple.500"
+                      color="brand.accent"
                       _hover={{ textDecoration: 'underline' }}
                     >
                       {owner.address}
                     </Chakra.Link>
                   </Chakra.Tooltip>
                 </Chakra.Td>
-                <Chakra.Td color={owner.ensName ? "purple.500" : "gray.400"}>
+                <Chakra.Td color={owner.ensName ? 'brand.accent' : 'gray.400'}>
                   {owner.ensName || '-'}
                 </Chakra.Td>
                 <Chakra.Td 
                   isNumeric
                   cursor="pointer"
-                  color="purple.500"
-                  _hover={{ color: 'purple.600', textDecoration: 'underline' }}
+                  color="brand.accent"
+                  _hover={{ color: 'cyan.300', textDecoration: 'underline' }}
                   onClick={() => handleNFTClick(owner)}
                 >
                   <AnimatedNumber value={owner.count} />
@@ -214,31 +220,35 @@ const Leaderboard = () => {
         <Chakra.HStack spacing={4} justify="center">
           <Chakra.ButtonGroup>
             <Chakra.Button
+              variant="neon"
               onClick={() => setPage(1)}
               isDisabled={page === 1}
             >
               {"<<"}
             </Chakra.Button>
             <Chakra.Button
+              variant="neon"
               onClick={() => setPage(p => Math.max(1, p - 1))}
               isDisabled={page === 1}
             >
               {"<"}
             </Chakra.Button>
             <Chakra.Button
-              variant="outline"
-              _hover={{ cursor: "default" }}
-              _active={{ bg: "transparent" }}
+              variant="glow"
+              _hover={{ cursor: 'default' }}
+              _active={{ bg: 'brand.button' }}
             >
              {currentPage} / {totalPages}
             </Chakra.Button>
             <Chakra.Button
+              variant="neon"
               onClick={() => setPage(p => p + 1)}
               isDisabled={page >= totalPages}
             >
               {">"}
             </Chakra.Button>
             <Chakra.Button
+              variant="neon"
               onClick={() => setPage(totalPages)}
               isDisabled={page >= totalPages}
             >
@@ -251,10 +261,14 @@ const Leaderboard = () => {
             onChange={(e) => {
               const newItemsPerPage = Number(e.target.value);
               setItemsPerPage(newItemsPerPage);
-              // Adjust current page to maintain approximate scroll position
               setPage(Math.floor(((page - 1) * itemsPerPage) / newItemsPerPage) + 1);
             }}
-            width="120px"
+            width="140px"
+            bg="whiteAlpha.100"
+            border="2px solid"
+            borderColor="brand.accent"
+            color="white"
+            _focus={{ borderColor: 'brand.accent', boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)' }}
           >
             <option value={10}>10 / page</option>
             <option value={20}>20 / page</option>
@@ -311,7 +325,7 @@ const Leaderboard = () => {
             )}
           </Chakra.ModalBody>
           <Chakra.ModalFooter>
-            <Chakra.Button onClick={onClose}>
+            <Chakra.Button variant="neon" onClick={onClose}>
               Close
             </Chakra.Button>
           </Chakra.ModalFooter>
