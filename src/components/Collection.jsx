@@ -221,7 +221,7 @@ const Collection = () => {
     return (
       <Chakra.Container py={10}>
         <Chakra.Box mb={8}>
-          <Chakra.Heading size="lg" mb={2} variant="glow">
+          <Chakra.Heading size="md" mb={2} variant="glow">
             Collection Explorer
           </Chakra.Heading>
           <Chakra.Text variant="neon">
@@ -249,7 +249,7 @@ const Collection = () => {
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2} variant="glow">
+        <Chakra.Heading size="md" mb={2} variant="glow">
           Collection Explorer
         </Chakra.Heading>
         <Chakra.Text variant="neon">
