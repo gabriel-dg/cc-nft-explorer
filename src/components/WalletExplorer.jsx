@@ -34,8 +34,9 @@ const WalletExplorer = () => {
     const result = await fetchNFTData(async () => {
       let searchAddress = query;
       let ensName = null;
+      const isHexAddress = /^0x[a-fA-F0-9]{40}$/i.test(query);
 
-      if (!query.startsWith('0x')) {
+      if (!isHexAddress) {
         try {
           const address = await mainnetAlchemy.core.resolveName(query);
           if (address) {
@@ -47,12 +48,19 @@ const WalletExplorer = () => {
           }
         } catch (err) {
           console.warn('ENS resolution failed, trying as address:', err);
+          if (isHexAddress) {
+            searchAddress = query;
+            setResolvedAddress(searchAddress);
+          } else {
+            throw err;
+          }
         }
       } else {
         ensName = await lookupENS(searchAddress);
+        // Siempre mostrar la dirección buscada, aunque no tenga ENS
+        setResolvedAddress(searchAddress);
         if (ensName) {
           setResolvedENS(ensName);
-          setResolvedAddress(searchAddress);
         }
       }
 
@@ -74,7 +82,7 @@ const WalletExplorer = () => {
           date,
           topic
         };
-      }).sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
+      }).sort((a, b) => parseInt(a.tokenId, 10) - parseInt(b.tokenId, 10));
     });
 
     if (result) setNfts(result);
@@ -88,11 +96,17 @@ const WalletExplorer = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const q = params.get('q') || '';
-    if (q && q !== searchInput) {
-      setSearchInput(q);
+    setSearchInput(q);
+    if (q.trim()) {
       (async () => {
         await handleSearch(q);
       })();
+    } else {
+      // Clear results when query is empty
+      setHasSearched(false);
+      setNfts([]);
+      setResolvedAddress(null);
+      setResolvedENS(null);
     }
   }, [location.search]);
 
