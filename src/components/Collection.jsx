@@ -348,8 +348,8 @@ const Collection = () => {
                 borderWidth="1px"
                 borderRadius="xl"
                 p={4}
-                bg="whiteAlpha.100"
-                borderColor="whiteAlpha.200"
+                bg="brand.dark"
+                borderColor="brand.dark"
               >
                 <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
                 <Chakra.Stack spacing={2}>
@@ -359,6 +359,9 @@ const Collection = () => {
                   {/* Debug accordion removed for production */}
                   <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
                     {featuredNft.ownerCount} Owners
+                  </Chakra.Button>
+                  <Chakra.Button as={Chakra.Link} href={getOpenSeaUrl(CONTRACT_ADDRESS, featuredNft.tokenId)} isExternal size="sm">
+                    View on OpenSea
                   </Chakra.Button>
                 </Chakra.Stack>
               </Chakra.Box>
@@ -412,8 +415,8 @@ const Collection = () => {
                 borderWidth="1px"
                 borderRadius="xl"
                 p={6}
-                bg="whiteAlpha.100"
-                borderColor="whiteAlpha.200"
+                bg="brand.dark"
+                borderColor="brand.dark"
               >
                 <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
                 <Chakra.Stack spacing={3}>
