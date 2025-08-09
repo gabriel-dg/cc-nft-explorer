@@ -104,6 +104,12 @@ const Collection = () => {
         });
       });
 
+      const resolveIpfs = (uri) => {
+        if (!uri) return null;
+        if (uri.startsWith('ipfs://')) return `https://ipfs.io/ipfs/${uri.slice(7)}`;
+        return uri;
+      };
+
       const processedNfts = nftResponse.nfts
         .map((nft, index) => {
           setLoadedCount(index + 1);
@@ -116,6 +122,9 @@ const Collection = () => {
             attributes.find((attr) => attr.trait_type === "Topic")?.value ||
             "Unknown Topic";
 
+          const animationFromMeta = nft.raw?.metadata?.animation_url || nft.raw?.metadata?.animationUrl || null;
+          const animationUrl = resolveIpfs(animationFromMeta);
+
           return {
             tokenId: nft.tokenId,
             image:
@@ -127,6 +136,9 @@ const Collection = () => {
             ownerCount: ownerCountMap.get(nft.tokenId) || 0,
             date,
             topic,
+            animationUrl,
+            raw: nft.raw || null,
+            media: nft.media || [],
           };
         })
         .sort((a, b) => parseInt(b.tokenId) - parseInt(a.tokenId));
@@ -311,10 +323,22 @@ const Collection = () => {
                       width="100%"
                       height="100%"
                     >
-                      {featuredNft.image ? (
+                      {featuredNft.animationUrl ? (
+                        <Chakra.Box
+                          as="video"
+                          src={featuredNft.animationUrl}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          controls
+                          width="100%"
+                          height="100%"
+                        />
+                      ) : featuredNft.image ? (
                         <Chakra.Image src={featuredNft.image} alt={featuredNft.title} objectFit="cover" w="100%" h="100%" />
                       ) : (
-                        <Chakra.Center bg="gray.100" h="100%">No Image</Chakra.Center>
+                        <Chakra.Center bg="gray.100" h="100%">No Media</Chakra.Center>
                       )}
                     </Chakra.Link>
                   </Chakra.Box>
@@ -332,6 +356,7 @@ const Collection = () => {
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Date:</Chakra.Text> {featuredNft.date}</Chakra.Text>
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
+                  {/* Debug accordion removed for production */}
                   <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
                     {featuredNft.ownerCount} Owners
                   </Chakra.Button>
@@ -351,12 +376,33 @@ const Collection = () => {
                 borderColor="whiteAlpha.200"
               >
                 <Chakra.AspectRatio ratio={1}>
-                  <Chakra.Box>
-                    {featuredNft.image ? (
-                      <Chakra.Image src={featuredNft.image} alt={featuredNft.title} objectFit="cover" w="100%" h="100%" />
-                    ) : (
-                      <Chakra.Center bg="gray.100" h="100%">No Image</Chakra.Center>
-                    )}
+                  <Chakra.Box position="relative" width="100%" height="100%">
+                    <Chakra.Link
+                      href={getOpenSeaUrl(CONTRACT_ADDRESS, featuredNft.tokenId)}
+                      isExternal
+                      _hover={{ opacity: 0.9 }}
+                      display="block"
+                      width="100%"
+                      height="100%"
+                    >
+                      {featuredNft.animationUrl ? (
+                        <Chakra.Box
+                          as="video"
+                          src={featuredNft.animationUrl}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          controls
+                          width="100%"
+                          height="100%"
+                        />
+                      ) : featuredNft.image ? (
+                        <Chakra.Image src={featuredNft.image} alt={featuredNft.title} objectFit="cover" w="100%" h="100%" />
+                      ) : (
+                        <Chakra.Center bg="gray.100" h="100%">No Media</Chakra.Center>
+                      )}
+                    </Chakra.Link>
                   </Chakra.Box>
                 </Chakra.AspectRatio>
               </Chakra.Box>
