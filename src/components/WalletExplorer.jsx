@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as Chakra from '@chakra-ui/react';
 import { useColorMode } from '@chakra-ui/react';
 import { alchemy, CONTRACT_ADDRESS, mainnetAlchemy } from '../config/alchemy';
@@ -6,7 +6,7 @@ import { useENS } from '../context/ENSContext';
 import { useNFTData } from '../hooks/useNFTData';
 import NFTCard from './NFTCard';
 import NFTCardSkeleton from './NFTCardSkeleton';
-import { debounce } from '../utils/helpers';
+// import { debounce } from '../utils/helpers';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { getPolygonScanUrl } from '../utils/constants';
 
@@ -20,8 +20,9 @@ const WalletExplorer = () => {
   const { lookupENS } = useENS();
   const { loading, error, fetchNFTData } = useNFTData();
 
-  const handleSearch = async () => {
-    if (!searchInput.trim()) return;
+  const handleSearch = async (inputValue) => {
+    const query = (inputValue ?? searchInput).trim();
+    if (!query) return;
     
     setNfts([]);
     setResolvedAddress(null);
@@ -29,15 +30,15 @@ const WalletExplorer = () => {
     setHasSearched(true);
 
     const result = await fetchNFTData(async () => {
-      let searchAddress = searchInput;
+      let searchAddress = query;
       let ensName = null;
 
-      if (!searchInput.startsWith('0x')) {
+      if (!query.startsWith('0x')) {
         try {
-          const address = await mainnetAlchemy.core.resolveName(searchInput);
+          const address = await mainnetAlchemy.core.resolveName(query);
           if (address) {
             searchAddress = address;
-            setResolvedENS(searchInput);
+            setResolvedENS(query);
             setResolvedAddress(address);
           } else {
             throw new Error('ENS name not found');
@@ -77,15 +78,22 @@ const WalletExplorer = () => {
     if (result) setNfts(result);
   };
 
-  const debouncedSearch = debounce(handleSearch, 500);
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
+  // const debouncedSearch = debounce(handleSearch, 500);
 
   const totalNFTs = nfts.reduce((acc, nft) => acc + parseInt(nft.balance), 0);
+
+  // Read search from URL (?q=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q') || '';
+    if (q && q !== searchInput) {
+      setSearchInput(q);
+      // Trigger search automatically when q present
+      (async () => {
+        await handleSearch(q);
+      })();
+    }
+  }, []);
 
   return (
     <Chakra.Container py={10}>
@@ -95,22 +103,7 @@ const WalletExplorer = () => {
           Enter an address or ENS name to view their NFTs
         </Chakra.Text>
 
-        <Chakra.HStack spacing={4}>
-          <Chakra.Input
-            placeholder="Address (0x...) or ENS name"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            size="lg"
-          />
-          <Chakra.Button
-            onClick={handleSearch}
-            size="lg"
-            isLoading={loading}
-          >
-            Search
-          </Chakra.Button>
-        </Chakra.HStack>
+        {/* Search moved to header */}
       </Chakra.Box>
 
       {error && (

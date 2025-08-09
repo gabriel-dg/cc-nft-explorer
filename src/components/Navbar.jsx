@@ -1,6 +1,6 @@
 import * as Chakra from "@chakra-ui/react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import { useColorMode } from "@chakra-ui/react";
+import { useColorMode, useBreakpointValue } from "@chakra-ui/react";
 import { MoonIcon, SunIcon, HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 
@@ -9,6 +9,8 @@ const Navbar = () => {
   const location = useLocation();
   const { colorMode, toggleColorMode } = useColorMode();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const brandTitle = useBreakpointValue({ base: 'Alchemy C.C.', md: 'Alchemy Community Call NFT' });
 
   const handleNavClick = (path) => {
     navigate(path);
@@ -20,6 +22,20 @@ const Navbar = () => {
     { path: "/leaderboard", label: "Leaderboard" },
     { path: "/wallet", label: "Wallet Explorer" },
   ];
+
+  const handleSearchSubmit = () => {
+    const text = searchText.trim();
+    const basePath = location.pathname || "/collection";
+    const url = text ? `${basePath}?q=${encodeURIComponent(text)}` : basePath;
+    navigate(url);
+    setIsOpen(false);
+  };
+
+  const searchPlaceholder = () => {
+    if (location.pathname.startsWith("/wallet")) return "Address (0x...) or ENS name";
+    if (location.pathname.startsWith("/leaderboard")) return "Filter by address or ENS";
+    return "Search by Token ID or Title...";
+  };
 
   return (
     <>
@@ -43,7 +59,7 @@ const Navbar = () => {
             fontSize={{ base: "lg", md: "xl" }}
             flexShrink={0}
           >
-            Alchemy Community Call NFT
+            {brandTitle}
           </Chakra.Box>
 
           {/* Desktop Navigation */}
@@ -62,6 +78,18 @@ const Navbar = () => {
                 {item.label}
               </Chakra.Button>
             ))}
+            <Chakra.HStack spacing={2}>
+              <Chakra.Input
+                size="sm"
+                placeholder={searchPlaceholder()}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
+                variant="neon"
+                width="280px"
+              />
+              <Chakra.Button size="sm" onClick={handleSearchSubmit}>Search</Chakra.Button>
+            </Chakra.HStack>
             <Chakra.IconButton
               icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
@@ -103,7 +131,18 @@ const Navbar = () => {
             variant="ghost"
             color="white"
           />
-          <Chakra.VStack minH="100vh" spacing={6} align="center" justify="flex-start" pt={24} pb={12}>
+          <Chakra.VStack minH="100vh" spacing={6} align="stretch" justify="flex-start" pt={24} pb={12} px={4}>
+            <Chakra.HStack>
+              <Chakra.Input
+                placeholder={searchPlaceholder()}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
+                variant="neon"
+                size="md"
+              />
+              <Chakra.Button size="md" onClick={handleSearchSubmit}>Search</Chakra.Button>
+            </Chakra.HStack>
             {navItems.map((item) => (
               <Chakra.Button
                 key={item.path}

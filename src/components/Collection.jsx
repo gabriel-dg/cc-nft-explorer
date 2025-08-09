@@ -41,6 +41,21 @@ const Collection = () => {
     setCurrentPage(1);
   }, [searchQuery]);
 
+  // Read search query from URL (?q=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q') || '';
+    if (q !== searchQuery) {
+      setSearchQuery(q);
+      const filtered = nfts.filter(
+        (nft) =>
+          nft.title.toLowerCase().includes(q.toLowerCase()) ||
+          nft.tokenId.includes(q)
+      );
+      setFilteredNfts(q ? filtered : nfts);
+    }
+  }, [window.location.search, nfts]);
+
   const fetchMetadataFromUri = async (uri) => {
     try {
       const response = await fetch(uri);
@@ -242,16 +257,7 @@ const Collection = () => {
         </Chakra.Text>
       </Chakra.Box>
 
-      {/* Search Bar */}
-      <Chakra.Box mb={8}>
-        <Chakra.Input
-          placeholder="Search by Token ID or Title..."
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-          size="lg"
-          variant="neon"
-        />
-      </Chakra.Box>
+      {/* Search moved to header */}
 
       {/* Featured Section */}
       {featuredNft && (

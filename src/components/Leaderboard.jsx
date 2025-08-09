@@ -112,6 +112,16 @@ const Leaderboard = () => {
     return multiplier * a[sortField].localeCompare(b[sortField]);
   });
 
+  // Optional: support header search (?q=...) to filter by address/ENS
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = (params.get('q') || '').toLowerCase();
+    if (!q) return;
+    setOwners(prev => prev.filter(o =>
+      o.address.toLowerCase().includes(q) || (o.ensName || '').toLowerCase().includes(q)
+    ));
+  }, []);
+
   if (loading) {
     return (
       <Chakra.Container py={10}>
