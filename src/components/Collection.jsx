@@ -46,13 +46,28 @@ const Collection = () => {
   // Read search query from URL (?q=...) reactively
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const q = params.get('q') || '';
-    setSearchQuery(q);
-    const filtered = nfts.filter(
-      (nft) =>
-        nft.title.toLowerCase().includes(q.toLowerCase()) ||
-        nft.tokenId.includes(q)
-    );
+    const raw = params.get('q') || '';
+    const q = raw.trim().toLowerCase();
+    setSearchQuery(raw);
+    const filtered = nfts.filter((nft) => {
+      const title = (nft.title || '').toLowerCase();
+      const topic = (nft.topic || '').toLowerCase();
+      const tokenIdHex = String(nft.tokenId || '').toLowerCase();
+      let tokenIdDec = '';
+      try {
+        tokenIdDec = String(parseInt(nft.tokenId, 16));
+      } catch {}
+      return (
+        (q && (
+          title.includes(q) ||
+          topic.includes(q) ||
+          tokenIdHex.includes(q) ||
+          (tokenIdDec && tokenIdDec.includes(q)) ||
+          (`token #${tokenIdDec}`).includes(q) ||
+          (`token #${tokenIdHex}`).includes(q)
+        ))
+      );
+    });
     setFilteredNfts(q ? filtered : nfts);
   }, [location.search, nfts]);
 
@@ -126,13 +141,28 @@ const Collection = () => {
   };
 
   const handleSearch = (value) => {
+    const q = value.trim().toLowerCase();
     setSearchQuery(value);
-    const filtered = nfts.filter(
-      (nft) =>
-        nft.title.toLowerCase().includes(value.toLowerCase()) ||
-        nft.tokenId.includes(value)
-    );
-    setFilteredNfts(filtered);
+    const filtered = nfts.filter((nft) => {
+      const title = (nft.title || '').toLowerCase();
+      const topic = (nft.topic || '').toLowerCase();
+      const tokenIdHex = String(nft.tokenId || '').toLowerCase();
+      let tokenIdDec = '';
+      try {
+        tokenIdDec = String(parseInt(nft.tokenId, 16));
+      } catch {}
+      return (
+        (q && (
+          title.includes(q) ||
+          topic.includes(q) ||
+          tokenIdHex.includes(q) ||
+          (tokenIdDec && tokenIdDec.includes(q)) ||
+          (`token #${tokenIdDec}`).includes(q) ||
+          (`token #${tokenIdHex}`).includes(q)
+        ))
+      );
+    });
+    setFilteredNfts(q ? filtered : nfts);
   };
 
   const handleOwnersClick = async (nft) => {
