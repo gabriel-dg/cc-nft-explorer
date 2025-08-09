@@ -374,6 +374,8 @@ const Collection = () => {
                 overflow="hidden"
                 bg="whiteAlpha.100"
                 borderColor="whiteAlpha.200"
+                w="75%"
+                mx="auto"
               >
                 <Chakra.AspectRatio ratio={1}>
                   <Chakra.Box position="relative" width="100%" height="100%">
