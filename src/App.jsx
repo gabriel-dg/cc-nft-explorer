@@ -3,7 +3,8 @@ import {
   Route,
   createRoutesFromElements,
   createBrowserRouter,
-  RouterProvider
+  RouterProvider,
+  Navigate
 } from 'react-router-dom';
 import Welcome from './components/Welcome';
 import Leaderboard from './components/Leaderboard';
@@ -16,7 +17,7 @@ import theme from './theme';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Navbar />}>
-      <Route index element={<Welcome />} />
+      <Route index element={<Navigate to="/collection" replace />} />
       <Route path="leaderboard" element={<Leaderboard />} />
       <Route path="collection" element={<Collection />} />
       <Route path="wallet" element={<WalletExplorer />} />

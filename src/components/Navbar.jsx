@@ -1,7 +1,8 @@
 import * as Chakra from "@chakra-ui/react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useColorMode, useBreakpointValue } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, HamburgerIcon, CloseIcon, SearchIcon, CopyIcon } from "@chakra-ui/icons";
+import { FaPaperPlane } from 'react-icons/fa';
 import { useState } from "react";
 
 const Navbar = () => {
@@ -11,6 +12,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const brandTitle = useBreakpointValue({ base: 'Alchemy C.C.', md: 'Alchemy Community Call NFT' });
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [debounceId, setDebounceId] = useState(null);
 
   const handleNavClick = (path) => {
     navigate(path);
@@ -29,12 +32,38 @@ const Navbar = () => {
     const url = text ? `${basePath}?q=${encodeURIComponent(text)}` : basePath;
     navigate(url);
     setIsOpen(false);
+    setIsSearchOpen(false);
   };
 
   const searchPlaceholder = () => {
     if (location.pathname.startsWith("/wallet")) return "Address (0x...) or ENS name";
     if (location.pathname.startsWith("/leaderboard")) return "Filter by address or ENS";
     return "Search by Token ID or Title...";
+  };
+
+  const handleSearchChange = (value) => {
+    setSearchText(value);
+    const path = location.pathname || '/collection';
+    const isLive = path.startsWith('/collection') || path.startsWith('/leaderboard');
+    if (!isLive) return; // Wallet will submit on Enter
+    if (debounceId) window.clearTimeout(debounceId);
+    const id = window.setTimeout(() => {
+      const url = value.trim() ? `${path}?q=${encodeURIComponent(value.trim())}` : path;
+      navigate(url, { replace: true });
+    }, 500);
+    setDebounceId(id);
+  };
+
+  const handlePasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setSearchText(text);
+        handleSearchChange(text);
+      }
+    } catch (err) {
+      // Silently ignore if clipboard not available/denied
+    }
   };
 
   return (
@@ -99,18 +128,64 @@ const Navbar = () => {
             />
           </Chakra.HStack>
 
-          {/* Mobile Menu Button */}
-          <Chakra.IconButton
-            display={{ base: "flex", md: "none" }}
-            onClick={() => setIsOpen(!isOpen)}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            variant="neon"
-            aria-label="Toggle menu"
-          />
+          {/* Mobile Controls: 1) Search icon 2) Theme icon 3) Hamburger menu */}
+          <Chakra.HStack spacing={2} display={{ base: "flex", md: "none" }}>
+            <Chakra.IconButton
+              aria-label="Open search"
+              icon={<SearchIcon />}
+              onClick={() => setIsSearchOpen((v) => !v)}
+              variant="solid"
+              size="sm"
+            />
+            <Chakra.IconButton
+              icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              onClick={toggleColorMode}
+              variant="solid"
+              size="sm"
+              aria-label="Toggle color mode"
+            />
+            <Chakra.IconButton
+              onClick={() => setIsOpen(!isOpen)}
+              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+              variant="neon"
+              aria-label="Toggle menu"
+            />
+          </Chakra.HStack>
         </Chakra.Flex>
 
       </Chakra.Box>
       
+      {/* Mobile inline search bar under header */}
+      {isSearchOpen && (
+        <Chakra.Box display={{ base: 'block', md: 'none' }} bg="#0e0b27" px={4} py={2} borderBottom="1px" borderColor="whiteAlpha.200">
+          <Chakra.HStack>
+            <Chakra.Input
+              autoFocus
+              placeholder={searchPlaceholder()}
+              value={searchText}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
+              variant="neon"
+              size="md"
+            />
+            <Chakra.IconButton
+              onClick={handleSearchSubmit}
+              size="md"
+              aria-label="Ejecutar búsqueda"
+              icon={<FaPaperPlane />}
+              variant="solid"
+            />
+            <Chakra.IconButton
+              onClick={handlePasteFromClipboard}
+              size="md"
+              aria-label="Pegar desde portapapeles"
+              icon={<CopyIcon />}
+              variant="solid"
+            />
+          </Chakra.HStack>
+        </Chakra.Box>
+      )}
+
       {/* Mobile Fullscreen Overlay Navigation (outside header to avoid stacking context) */}
       {isOpen && (
         <Chakra.Box
@@ -132,17 +207,6 @@ const Navbar = () => {
             color="white"
           />
           <Chakra.VStack minH="100vh" spacing={6} align="stretch" justify="flex-start" pt={24} pb={12} px={4}>
-            <Chakra.HStack>
-              <Chakra.Input
-                placeholder={searchPlaceholder()}
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
-                variant="neon"
-                size="md"
-              />
-              <Chakra.Button size="md" onClick={handleSearchSubmit}>Search</Chakra.Button>
-            </Chakra.HStack>
             {navItems.map((item) => (
               <Chakra.Button
                 key={item.path}
