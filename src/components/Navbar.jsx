@@ -111,9 +111,12 @@ const Navbar = () => {
             {navItems.map((item) => (
               <Chakra.Button
                 key={item.path}
-                variant={location.pathname === item.path ? "glow" : "neon"}
                 onClick={() => handleNavClick(item.path)}
                 size="lg"
+                bg="#0e0b27"
+                color="white"
+                _hover={{ bg: 'rgba(14, 11, 39, 0.9)' }}
+                _active={{ bg: 'rgba(14, 11, 39, 0.85)' }}
               >
                 {item.label}
               </Chakra.Button>
@@ -121,8 +124,11 @@ const Navbar = () => {
             <Chakra.Button
               leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
-              variant="neon"
               size="lg"
+              bg="#0e0b27"
+              color="white"
+              _hover={{ bg: 'rgba(14, 11, 39, 0.9)' }}
+              _active={{ bg: 'rgba(14, 11, 39, 0.85)' }}
             >
               {colorMode === "light" ? "Dark Mode" : "Light Mode"}
             </Chakra.Button>
