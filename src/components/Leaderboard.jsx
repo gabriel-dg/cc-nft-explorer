@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as Chakra from '@chakra-ui/react';
 import { useColorMode } from '@chakra-ui/react';
 import { alchemy, CONTRACT_ADDRESS } from '../config/alchemy';
@@ -24,6 +25,7 @@ const Leaderboard = () => {
   const [sortDirection, setSortDirection] = useState('desc');
 
   const { colorMode } = useColorMode();
+  const location = useLocation();
 
   const totalPages = Math.ceil(owners.length / itemsPerPage);
   const currentPage = page;
@@ -104,7 +106,7 @@ const Leaderboard = () => {
     }
   };
 
-  const sortedOwners = owners.sort((a, b) => {
+  const sortedOwners = [...owners].sort((a, b) => {
     const multiplier = sortDirection === 'desc' ? -1 : 1;
     if (sortField === 'count') {
       return multiplier * (a.count - b.count);
@@ -112,15 +114,12 @@ const Leaderboard = () => {
     return multiplier * a[sortField].localeCompare(b[sortField]);
   });
 
-  // Optional: support header search (?q=...) to filter by address/ENS
+  // Optional: support header search (?q=...) to filter by address/ENS without mutating original list
+  const [query, setQuery] = useState('');
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const q = (params.get('q') || '').toLowerCase();
-    if (!q) return;
-    setOwners(prev => prev.filter(o =>
-      o.address.toLowerCase().includes(q) || (o.ensName || '').toLowerCase().includes(q)
-    ));
-  }, []);
+    const params = new URLSearchParams(location.search);
+    setQuery((params.get('q') || '').toLowerCase());
+  }, [location.search]);
 
   if (loading) {
     return (
@@ -192,8 +191,11 @@ const Leaderboard = () => {
               </Chakra.Th>
             </Chakra.Tr>
           </Chakra.Thead>
-          <Chakra.Tbody>
-            {sortedOwners.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((owner, index) => (
+           <Chakra.Tbody>
+            {sortedOwners
+              .filter(o => !query || o.address.toLowerCase().includes(query) || (o.ensName || '').toLowerCase().includes(query))
+              .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+              .map((owner, index) => (
               <Chakra.Tr key={owner.address}>
                 <Chakra.Td>{((page - 1) * itemsPerPage) + index + 1}</Chakra.Td>
                 <Chakra.Td fontFamily="mono" fontSize="sm">

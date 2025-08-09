@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import * as Chakra from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import { alchemy, CONTRACT_ADDRESS } from "../config/alchemy";
@@ -31,6 +32,7 @@ const Collection = () => {
   const { lookupENS, getCachedENS, isInCache } = useENS();
   const { loading, error, fetchNFTData } = useNFTData();
   const { colorMode } = useColorMode();
+  const location = useLocation();
 
   useEffect(() => {
     fetchNFTs();
@@ -41,20 +43,18 @@ const Collection = () => {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  // Read search query from URL (?q=...)
+  // Read search query from URL (?q=...) reactively
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(location.search);
     const q = params.get('q') || '';
-    if (q !== searchQuery) {
-      setSearchQuery(q);
-      const filtered = nfts.filter(
-        (nft) =>
-          nft.title.toLowerCase().includes(q.toLowerCase()) ||
-          nft.tokenId.includes(q)
-      );
-      setFilteredNfts(q ? filtered : nfts);
-    }
-  }, [window.location.search, nfts]);
+    setSearchQuery(q);
+    const filtered = nfts.filter(
+      (nft) =>
+        nft.title.toLowerCase().includes(q.toLowerCase()) ||
+        nft.tokenId.includes(q)
+    );
+    setFilteredNfts(q ? filtered : nfts);
+  }, [location.search, nfts]);
 
   const fetchMetadataFromUri = async (uri) => {
     try {

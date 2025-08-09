@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as Chakra from '@chakra-ui/react';
 import { useColorMode } from '@chakra-ui/react';
 import { alchemy, CONTRACT_ADDRESS, mainnetAlchemy } from '../config/alchemy';
@@ -18,6 +19,7 @@ const WalletExplorer = () => {
   const [resolvedENS, setResolvedENS] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   const { lookupENS } = useENS();
+  const location = useLocation();
   const { loading, error, fetchNFTData } = useNFTData();
 
   const handleSearch = async (inputValue) => {
@@ -84,16 +86,15 @@ const WalletExplorer = () => {
 
   // Read search from URL (?q=...)
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(location.search);
     const q = params.get('q') || '';
     if (q && q !== searchInput) {
       setSearchInput(q);
-      // Trigger search automatically when q present
       (async () => {
         await handleSearch(q);
       })();
     }
-  }, []);
+  }, [location.search]);
 
   return (
     <Chakra.Container py={10}>
