@@ -307,11 +307,10 @@ const Collection = () => {
           <Chakra.Box display={{ base: "block", lg: "none" }}>
             <Chakra.VStack spacing={4} align="stretch">
               <Chakra.Box
-                borderWidth="1px"
+                borderWidth="0"
                 borderRadius="xl"
                 overflow="hidden"
-                bg="whiteAlpha.100"
-                borderColor="whiteAlpha.200"
+                bg="transparent"
               >
                 <Chakra.AspectRatio ratio={1}>
                   <Chakra.Box position="relative" width="100%" height="100%">
@@ -345,11 +344,10 @@ const Collection = () => {
                 </Chakra.AspectRatio>
               </Chakra.Box>
               <Chakra.Box
-                borderWidth="1px"
+                borderWidth="0"
                 borderRadius="xl"
                 p={4}
-                bg="brand.dark"
-                borderColor="brand.dark"
+                bg="transparent"
               >
                  <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
                  <Chakra.HStack spacing={2} mb={2}>
@@ -379,11 +377,10 @@ const Collection = () => {
           <Chakra.Box display={{ base: "none", lg: "block" }}>
             <Chakra.Grid templateColumns="1fr 1fr" gap={6}>
               <Chakra.Box
-                borderWidth="1px"
+                borderWidth="0"
                 borderRadius="xl"
                 overflow="hidden"
-                bg="whiteAlpha.100"
-                borderColor="whiteAlpha.200"
+                bg="transparent"
                 w="75%"
                 mx="auto"
               >
@@ -419,11 +416,10 @@ const Collection = () => {
                 </Chakra.AspectRatio>
               </Chakra.Box>
               <Chakra.Box
-                borderWidth="1px"
+                borderWidth="0"
                 borderRadius="xl"
                 p={6}
-                bg="brand.dark"
-                borderColor="brand.dark"
+                bg="transparent"
               >
                  <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
                  <Chakra.HStack spacing={2} mb={3}>

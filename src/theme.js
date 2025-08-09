@@ -4,8 +4,8 @@ const theme = extendTheme({
   styles: {
     global: (props) => ({
       body: {
-        bg: '#0e0b27',
-        color: 'white',
+        bg: props.colorMode === 'light' ? 'white' : '#0e0b27',
+        color: props.colorMode === 'light' ? 'brand.dark' : 'white',
         minH: '100vh',
       },
     }),
@@ -34,50 +34,50 @@ const theme = extendTheme({
         variant: 'solid',
       },
       variants: {
-        solid: {
-          bg: 'brand.dark',
-          color: 'white',
+        solid: (props) => ({
+          bg: props.colorMode === 'light' ? 'white' : 'brand.dark',
+          color: props.colorMode === 'light' ? 'brand.dark' : 'white',
           _hover: {
-            bg: '#15123a',
+            bg: props.colorMode === 'light' ? 'gray.100' : '#15123a',
           },
           _active: {
-            bg: '#120f33',
+            bg: props.colorMode === 'light' ? 'gray.200' : '#120f33',
           },
-        },
-        neon: {
-          bg: 'brand.dark',
-          color: 'white',
+        }),
+        neon: (props) => ({
+          bg: props.colorMode === 'light' ? 'white' : 'brand.dark',
+          color: props.colorMode === 'light' ? 'brand.dark' : 'white',
           border: 'none',
           _hover: {
-            bg: '#15123a',
+            bg: props.colorMode === 'light' ? 'gray.100' : '#15123a',
           },
           _active: {
-            bg: '#120f33',
+            bg: props.colorMode === 'light' ? 'gray.200' : '#120f33',
           },
-        },
-        glow: {
-          bg: 'brand.dark',
-          color: 'white',
+        }),
+        glow: (props) => ({
+          bg: props.colorMode === 'light' ? 'white' : 'brand.dark',
+          color: props.colorMode === 'light' ? 'brand.dark' : 'white',
           border: 'none',
           _hover: {
-            bg: '#15123a',
+            bg: props.colorMode === 'light' ? 'gray.100' : '#15123a',
           },
           _active: {
-            bg: '#120f33',
+            bg: props.colorMode === 'light' ? 'gray.200' : '#120f33',
           },
-        },
+        }),
       },
     },
     Heading: {
       variants: {
-        neon: {
+        neon: (props) => ({
           color: 'brand.accent',
           fontWeight: 'bold',
-        },
-        glow: {
-          color: 'white',
+        }),
+        glow: (props) => ({
+          color: props.colorMode === 'light' ? 'brand.dark' : 'white',
           fontWeight: 'bold',
-        },
+        }),
       },
     },
     Text: {
@@ -94,13 +94,13 @@ const theme = extendTheme({
       variants: {
         simple: (props) => ({
           th: {
-            borderColor: 'whiteAlpha.200',
-            color: 'white',
-            bg: 'whiteAlpha.100',
+            borderColor: props.colorMode === 'light' ? 'gray.200' : 'whiteAlpha.200',
+            color: props.colorMode === 'light' ? 'brand.dark' : 'white',
+            bg: props.colorMode === 'light' ? 'gray.50' : 'whiteAlpha.100',
           },
           td: {
-            borderColor: 'whiteAlpha.200',
-            color: 'white',
+            borderColor: props.colorMode === 'light' ? 'gray.200' : 'whiteAlpha.200',
+            color: props.colorMode === 'light' ? 'brand.dark' : 'white',
           },
         }),
       },
@@ -108,40 +108,41 @@ const theme = extendTheme({
     Card: {
       baseStyle: (props) => ({
         container: {
-          bg: 'whiteAlpha.100',
-          color: 'white',
-          backdropFilter: 'blur(10px)',
+          bg: props.colorMode === 'light' ? 'white' : 'whiteAlpha.100',
+          color: props.colorMode === 'light' ? 'brand.dark' : 'white',
+          backdropFilter: props.colorMode === 'light' ? 'none' : 'blur(10px)',
           border: '1px solid',
-          borderColor: 'whiteAlpha.200',
+          borderColor: props.colorMode === 'light' ? 'gray.200' : 'whiteAlpha.200',
         },
       }),
     },
     Modal: {
       baseStyle: (props) => ({
         dialog: {
-          bg: 'brand.dark',
+          bg: props.colorMode === 'light' ? 'white' : 'brand.dark',
+          color: props.colorMode === 'light' ? 'brand.dark' : 'white',
           border: '1px solid',
-          borderColor: 'whiteAlpha.200',
+          borderColor: props.colorMode === 'light' ? 'gray.200' : 'whiteAlpha.200',
         },
       }),
     },
     Input: {
       variants: {
-        neon: {
+        neon: (props) => ({
           field: {
-            bg: 'whiteAlpha.100',
+            bg: props.colorMode === 'light' ? 'white' : 'whiteAlpha.100',
             border: '2px solid',
             borderColor: 'brand.accent',
-            color: 'white',
+            color: props.colorMode === 'light' ? 'brand.dark' : 'white',
             _focus: {
               borderColor: 'brand.accent',
-              boxShadow: '0 0 0 2px rgba(156, 163, 175, 0.35)',
+              boxShadow: props.colorMode === 'light' ? '0 0 0 2px rgba(0,0,0,0.05)' : '0 0 0 2px rgba(156, 163, 175, 0.35)',
             },
             _placeholder: {
-              color: 'whiteAlpha.600',
+              color: props.colorMode === 'light' ? 'gray.500' : 'whiteAlpha.600',
             },
           },
-        },
+        }),
       },
     },
   },

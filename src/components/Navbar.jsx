@@ -99,7 +99,11 @@ const Navbar = () => {
             {navItems.map((item) => (
               <Chakra.Button
                 key={item.path}
-                variant={location.pathname === item.path ? "glow" : "neon"}
+                variant="solid"
+                bg="brand.dark"
+                color="white"
+                _hover={{ bg: '#15123a' }}
+                _active={{ bg: '#120f33' }}
                 onClick={() => handleNavClick(item.path)}
                 size="sm"
               >
@@ -110,6 +114,10 @@ const Navbar = () => {
               icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
               variant="solid"
+              bg="brand.dark"
+              color="white"
+              _hover={{ bg: '#15123a' }}
+              _active={{ bg: '#120f33' }}
               size="sm"
               aria-label="Toggle color mode"
             />
@@ -122,19 +130,31 @@ const Navbar = () => {
               icon={<SearchIcon />}
               onClick={() => setIsSearchOpen((v) => !v)}
               variant="solid"
+              bg="brand.dark"
+              color="white"
+              _hover={{ bg: '#15123a' }}
+              _active={{ bg: '#120f33' }}
               size="sm"
             />
             <Chakra.IconButton
               icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
               variant="solid"
+              bg="brand.dark"
+              color="white"
+              _hover={{ bg: '#15123a' }}
+              _active={{ bg: '#120f33' }}
               size="sm"
               aria-label="Toggle color mode"
             />
             <Chakra.IconButton
               onClick={() => setIsOpen(!isOpen)}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-              variant="neon"
+              variant="solid"
+              bg="brand.dark"
+              color="white"
+              _hover={{ bg: '#15123a' }}
+              _active={{ bg: '#120f33' }}
               aria-label="Toggle menu"
             />
           </Chakra.HStack>
@@ -154,6 +174,10 @@ const Navbar = () => {
               onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
               variant="neon"
               size="md"
+              bg="whiteAlpha.100"
+              color="white"
+              _placeholder={{ color: 'whiteAlpha.600' }}
+              _focus={{ borderColor: 'brand.accent', boxShadow: '0 0 0 2px rgba(156, 163, 175, 0.35)' }}
             />
             <Chakra.IconButton
               onClick={handleSearchSubmit}
@@ -161,6 +185,10 @@ const Navbar = () => {
               aria-label="Ejecutar búsqueda"
               icon={<FaPaperPlane />}
               variant="solid"
+              bg="brand.dark"
+              color="white"
+              _hover={{ bg: '#15123a' }}
+              _active={{ bg: '#120f33' }}
             />
             <Chakra.IconButton
               onClick={handlePasteFromClipboard}
@@ -168,6 +196,10 @@ const Navbar = () => {
               aria-label="Pegar desde portapapeles"
               icon={<CopyIcon />}
               variant="solid"
+              bg="brand.dark"
+              color="white"
+              _hover={{ bg: '#15123a' }}
+              _active={{ bg: '#120f33' }}
             />
           </Chakra.HStack>
         </Chakra.Box>
@@ -175,7 +207,7 @@ const Navbar = () => {
 
       {/* Desktop inline search bar under header */}
       <Chakra.Box display={{ base: 'none', md: 'block' }} bg="#0e0b27" px={4} py={3} borderBottom="1px" borderColor="whiteAlpha.200">
-        <Chakra.HStack maxW="container.xl" mx="auto">
+          <Chakra.HStack maxW="container.xl" mx="auto">
           <Chakra.Input
             placeholder={searchPlaceholder()}
             value={searchText}
@@ -183,6 +215,10 @@ const Navbar = () => {
             onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
             variant="neon"
             size="md"
+            bg="whiteAlpha.100"
+            color="white"
+            _placeholder={{ color: 'whiteAlpha.600' }}
+            _focus={{ borderColor: 'brand.accent', boxShadow: '0 0 0 2px rgba(156, 163, 175, 0.35)' }}
           />
           <Chakra.IconButton
             onClick={handleSearchSubmit}
@@ -190,6 +226,10 @@ const Navbar = () => {
             aria-label="Ejecutar búsqueda"
             icon={<FaPaperPlane />}
             variant="solid"
+            bg="brand.dark"
+            color="white"
+            _hover={{ bg: '#15123a' }}
+            _active={{ bg: '#120f33' }}
           />
           <Chakra.IconButton
             onClick={handlePasteFromClipboard}
@@ -197,6 +237,10 @@ const Navbar = () => {
             aria-label="Pegar desde portapapeles"
             icon={<CopyIcon />}
             variant="solid"
+            bg="brand.dark"
+            color="white"
+            _hover={{ bg: '#15123a' }}
+            _active={{ bg: '#120f33' }}
           />
         </Chakra.HStack>
       </Chakra.Box>
