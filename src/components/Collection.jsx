@@ -351,11 +351,18 @@ const Collection = () => {
                 bg="brand.dark"
                 borderColor="brand.dark"
               >
-                <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
-                <Chakra.Stack spacing={2}>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Date:</Chakra.Text> {featuredNft.date}</Chakra.Text>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
+                 <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
+                 <Chakra.HStack spacing={2} mb={2}>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="xs" fontWeight="bold" noOfLines={1}>{featuredNft.topic}</Chakra.Text>
+                   </Chakra.Box>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="xs" fontWeight="bold" noOfLines={1}>{featuredNft.date}</Chakra.Text>
+                   </Chakra.Box>
+                 </Chakra.HStack>
+                 <Chakra.Stack spacing={2}>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
                   {/* Debug accordion removed for production */}
                   <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
                     {featuredNft.ownerCount} Owners
@@ -418,11 +425,18 @@ const Collection = () => {
                 bg="brand.dark"
                 borderColor="brand.dark"
               >
-                <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
-                <Chakra.Stack spacing={3}>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Date:</Chakra.Text> {featuredNft.date}</Chakra.Text>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
+                 <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
+                 <Chakra.HStack spacing={2} mb={3}>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="sm" fontWeight="bold" noOfLines={1}>{featuredNft.topic}</Chakra.Text>
+                   </Chakra.Box>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="sm" fontWeight="bold" noOfLines={1}>{featuredNft.date}</Chakra.Text>
+                   </Chakra.Box>
+                 </Chakra.HStack>
+                 <Chakra.Stack spacing={3}>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
                   <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
                     {featuredNft.ownerCount} Owners
                   </Chakra.Button>

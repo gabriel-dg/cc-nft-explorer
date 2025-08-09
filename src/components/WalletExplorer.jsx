@@ -113,7 +113,7 @@ const WalletExplorer = () => {
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2}>Wallet Explorer</Chakra.Heading>
+        <Chakra.Heading size="md" mb={2}>Wallet Explorer</Chakra.Heading>
         <Chakra.Text color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} mb={6}>
           Enter an address or ENS name to view their NFTs
         </Chakra.Text>

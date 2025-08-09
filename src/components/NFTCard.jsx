@@ -50,25 +50,27 @@ const NFTCard = ({ nft, onClick, showOwners = false }) => {
             )}
           </Chakra.Link>
           
-          {/* Metadata overlay top (date/topic) */}
+          {/* Metadata overlay top (topic/date) */}
           <Chakra.Box
             position="absolute"
             top={2}
             left={2}
             right={2}
-            bg="rgba(0, 0, 0, 0.7)"
             color="white"
             p={2}
             borderRadius="sm"
-            backdropFilter="blur(10px)"
           >
-            <Chakra.Flex justify="space-between" align="center">
-              <Chakra.Text fontSize="xs" fontWeight="bold">
-                {nft.date}
-              </Chakra.Text>
-              <Chakra.Text fontSize="xs" fontWeight="bold">
-                {nft.topic}
-              </Chakra.Text>
+            <Chakra.Flex justify="space-between" align="center" gap={2}>
+              <Chakra.Box bg="rgba(0,0,0,0.65)" px={2} py={1} borderRadius="md">
+                <Chakra.Text fontSize="xs" fontWeight="bold" noOfLines={1}>
+                  {nft.topic}
+                </Chakra.Text>
+              </Chakra.Box>
+              <Chakra.Box bg="rgba(0,0,0,0.65)" px={2} py={1} borderRadius="md">
+                <Chakra.Text fontSize="xs" fontWeight="bold" noOfLines={1}>
+                  {nft.date}
+                </Chakra.Text>
+              </Chakra.Box>
             </Chakra.Flex>
           </Chakra.Box>
 

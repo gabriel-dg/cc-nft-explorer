@@ -126,7 +126,7 @@ const Leaderboard = () => {
       <Chakra.Container py={10}>
         <Chakra.VStack spacing={4} align="stretch">
           <Chakra.Box mb={8}>
-            <Chakra.Heading size="lg" mb={2}>NFT Leaderboard</Chakra.Heading>
+            <Chakra.Heading size="md" mb={2}>NFT Leaderboard</Chakra.Heading>
             <Chakra.Text color="gray.600">Top holders of the collection</Chakra.Text>
           </Chakra.Box>
           {[...Array(5)].map((_, i) => (
@@ -157,7 +157,7 @@ const Leaderboard = () => {
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2} variant="glow">NFT Leaderboard</Chakra.Heading>
+        <Chakra.Heading size="md" mb={2} variant="glow">NFT Leaderboard</Chakra.Heading>
         <Chakra.Text variant="neon">
           Top holders of the collection
         </Chakra.Text>
