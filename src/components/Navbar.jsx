@@ -106,18 +106,6 @@ const Navbar = () => {
                 {item.label}
               </Chakra.Button>
             ))}
-            <Chakra.HStack spacing={2}>
-              <Chakra.Input
-                size="sm"
-                placeholder={searchPlaceholder()}
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
-                variant="neon"
-                width="280px"
-              />
-              <Chakra.Button size="sm" onClick={handleSearchSubmit}>Search</Chakra.Button>
-            </Chakra.HStack>
             <Chakra.IconButton
               icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
@@ -184,6 +172,34 @@ const Navbar = () => {
           </Chakra.HStack>
         </Chakra.Box>
       )}
+
+      {/* Desktop inline search bar under header */}
+      <Chakra.Box display={{ base: 'none', md: 'block' }} bg="#0e0b27" px={4} py={3} borderBottom="1px" borderColor="whiteAlpha.200">
+        <Chakra.HStack maxW="container.xl" mx="auto">
+          <Chakra.Input
+            placeholder={searchPlaceholder()}
+            value={searchText}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
+            variant="neon"
+            size="md"
+          />
+          <Chakra.IconButton
+            onClick={handleSearchSubmit}
+            size="md"
+            aria-label="Ejecutar búsqueda"
+            icon={<FaPaperPlane />}
+            variant="solid"
+          />
+          <Chakra.IconButton
+            onClick={handlePasteFromClipboard}
+            size="md"
+            aria-label="Pegar desde portapapeles"
+            icon={<CopyIcon />}
+            variant="solid"
+          />
+        </Chakra.HStack>
+      </Chakra.Box>
 
       {/* Mobile Fullscreen Overlay Navigation (outside header to avoid stacking context) */}
       {isOpen && (
