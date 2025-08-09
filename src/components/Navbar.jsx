@@ -85,44 +85,51 @@ const Navbar = () => {
           />
         </Chakra.Flex>
 
-        {/* Mobile Navigation */}
-        <Chakra.Collapse in={isOpen} animateOpacity>
-          <Chakra.Box
-            bg="#0e0b27"
-            borderTop="1px"
-            borderColor="whiteAlpha.200"
-            py={4}
-            backdropFilter="blur(10px)"
-          >
-            <Chakra.VStack spacing={2} align="stretch">
-              {navItems.map((item) => (
-                <Chakra.Button
-                  key={item.path}
-                  variant={location.pathname === item.path ? "glow" : "neon"}
-                  onClick={() => handleNavClick(item.path)}
-                  justifyContent="flex-start"
-                  px={4}
-                  py={3}
-                >
-                  {item.label}
-                </Chakra.Button>
-              ))}
-              <Chakra.Flex px={4} py={2}>
-                <Chakra.Button
-                  leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-                  onClick={toggleColorMode}
-                  variant="neon"
-                  justifyContent="flex-start"
-                  w="full"
-                >
-                  {colorMode === "light" ? "Dark Mode" : "Light Mode"}
-                </Chakra.Button>
-              </Chakra.Flex>
-            </Chakra.VStack>
-          </Chakra.Box>
-        </Chakra.Collapse>
       </Chakra.Box>
       
+      {/* Mobile Fullscreen Overlay Navigation (outside header to avoid stacking context) */}
+      {isOpen && (
+        <Chakra.Box
+          display={{ base: "block", md: "none" }}
+          position="fixed"
+          inset={0}
+          zIndex={1000}
+          bg="#0e0b27"
+          overflowY="auto"
+        >
+          <Chakra.IconButton
+            aria-label="Close menu"
+            icon={<CloseIcon />}
+            onClick={() => setIsOpen(false)}
+            position="absolute"
+            top={4}
+            right={4}
+            variant="ghost"
+            color="white"
+          />
+          <Chakra.VStack minH="100vh" spacing={6} align="center" justify="flex-start" pt={24} pb={12}>
+            {navItems.map((item) => (
+              <Chakra.Button
+                key={item.path}
+                variant={location.pathname === item.path ? "glow" : "neon"}
+                onClick={() => handleNavClick(item.path)}
+                size="lg"
+              >
+                {item.label}
+              </Chakra.Button>
+            ))}
+            <Chakra.Button
+              leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              onClick={toggleColorMode}
+              variant="neon"
+              size="lg"
+            >
+              {colorMode === "light" ? "Dark Mode" : "Light Mode"}
+            </Chakra.Button>
+          </Chakra.VStack>
+        </Chakra.Box>
+      )}
+
       <Chakra.Box
         bg="transparent"
         minH="calc(100vh - 64px)"
