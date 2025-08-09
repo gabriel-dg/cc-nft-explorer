@@ -31,30 +31,39 @@ const theme = extendTheme({
     Button: {
       defaultProps: {
         colorScheme: 'purple',
+        variant: 'solid',
       },
       variants: {
-        neon: {
-          bg: 'transparent',
-          border: '2px solid',
-          borderColor: 'brand.accent',
-          color: 'brand.accent',
+        solid: {
+          bg: 'brand.button',
+          color: 'white',
           _hover: {
-            bg: 'brand.accent',
-            color: 'white',
-            boxShadow: '0 0 20px rgba(6, 182, 212, 0.5)',
+            bg: 'rgba(26, 23, 56, 0.9)',
           },
           _active: {
-            bg: 'brand.accent',
-            color: 'white',
+            bg: 'rgba(26, 23, 56, 0.85)',
+          },
+        },
+        neon: {
+          bg: 'brand.button',
+          color: 'white',
+          border: 'none',
+          _hover: {
+            bg: 'rgba(26, 23, 56, 0.9)',
+          },
+          _active: {
+            bg: 'rgba(26, 23, 56, 0.85)',
           },
         },
         glow: {
           bg: 'brand.button',
           color: 'white',
-          boxShadow: '0 0 10px rgba(26, 23, 56, 0.5)',
+          border: 'none',
           _hover: {
-            boxShadow: '0 0 20px rgba(26, 23, 56, 0.8)',
-            transform: 'translateY(-2px)',
+            bg: 'rgba(26, 23, 56, 0.9)',
+          },
+          _active: {
+            bg: 'rgba(26, 23, 56, 0.85)',
           },
         },
       },

@@ -130,22 +130,28 @@ const WalletExplorer = () => {
             bg={colorMode === 'dark' ? 'purple.900' : 'purple.50'} 
             borderRadius="md"
           >
-            <Chakra.HStack>
-              <Chakra.Text fontWeight="bold">Address:</Chakra.Text>
+            <Chakra.Stack direction={{ base: 'column', sm: 'row' }} spacing={2} align={{ base: 'flex-start', sm: 'center' }}>
+              <Chakra.Text fontWeight="bold" flexShrink={0}>Address:</Chakra.Text>
               <Chakra.Tooltip label="Click to view on Polygonscan">
                 <Chakra.Link
                   href={getPolygonScanUrl(resolvedAddress || searchInput)}
                   isExternal
-                  color="purple.500"
+                  color="purple.300"
+                  maxW="full"
                 >
                   <Chakra.Code 
                     bg={colorMode === 'dark' ? 'gray.700' : 'gray.100'}
+                    maxW="full"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                    display="block"
                   >
                     {resolvedAddress || searchInput}
                   </Chakra.Code>
                 </Chakra.Link>
               </Chakra.Tooltip>
-            </Chakra.HStack>
+            </Chakra.Stack>
             {resolvedENS && (
               <Chakra.HStack>
                 <Chakra.Text fontWeight="bold">ENS Name:</Chakra.Text>
