@@ -35,35 +35,35 @@ const theme = extendTheme({
       },
       variants: {
         solid: {
-          bg: 'brand.button',
+          bg: 'brand.dark',
           color: 'white',
           _hover: {
-            bg: 'rgba(26, 23, 56, 0.9)',
+            bg: '#15123a',
           },
           _active: {
-            bg: 'rgba(26, 23, 56, 0.85)',
+            bg: '#120f33',
           },
         },
         neon: {
-          bg: 'brand.button',
+          bg: 'brand.dark',
           color: 'white',
           border: 'none',
           _hover: {
-            bg: 'rgba(26, 23, 56, 0.9)',
+            bg: '#15123a',
           },
           _active: {
-            bg: 'rgba(26, 23, 56, 0.85)',
+            bg: '#120f33',
           },
         },
         glow: {
-          bg: 'brand.button',
+          bg: 'brand.dark',
           color: 'white',
           border: 'none',
           _hover: {
-            bg: 'rgba(26, 23, 56, 0.9)',
+            bg: '#15123a',
           },
           _active: {
-            bg: 'rgba(26, 23, 56, 0.85)',
+            bg: '#120f33',
           },
         },
       },
@@ -72,12 +72,10 @@ const theme = extendTheme({
       variants: {
         neon: {
           color: 'brand.accent',
-          textShadow: '0 0 10px rgba(6, 182, 212, 0.8)',
           fontWeight: 'bold',
         },
         glow: {
           color: 'white',
-          textShadow: '0 0 15px rgba(255, 255, 255, 0.8)',
           fontWeight: 'bold',
         },
       },

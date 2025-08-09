@@ -42,10 +42,6 @@ const Navbar = () => {
             fontWeight="bold"
             fontSize={{ base: "lg", md: "xl" }}
             flexShrink={0}
-            textShadow="0 0 15px rgba(255, 255, 255, 0.8)"
-            _hover={{
-              textShadow: "0 0 20px rgba(255, 255, 255, 1)",
-            }}
           >
             Alchemy Community Call NFT
           </Chakra.Box>
@@ -69,7 +65,7 @@ const Navbar = () => {
             <Chakra.IconButton
               icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
-              variant="neon"
+              variant="solid"
               size="sm"
               aria-label="Toggle color mode"
             />
@@ -113,10 +109,7 @@ const Navbar = () => {
                 key={item.path}
                 onClick={() => handleNavClick(item.path)}
                 size="lg"
-                bg="#0e0b27"
-                color="white"
-                _hover={{ bg: 'rgba(14, 11, 39, 0.9)' }}
-                _active={{ bg: 'rgba(14, 11, 39, 0.85)' }}
+                variant="solid"
               >
                 {item.label}
               </Chakra.Button>
@@ -125,10 +118,7 @@ const Navbar = () => {
               leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               onClick={toggleColorMode}
               size="lg"
-              bg="#0e0b27"
-              color="white"
-              _hover={{ bg: 'rgba(14, 11, 39, 0.9)' }}
-              _active={{ bg: 'rgba(14, 11, 39, 0.85)' }}
+              variant="solid"
             >
               {colorMode === "light" ? "Dark Mode" : "Light Mode"}
             </Chakra.Button>
