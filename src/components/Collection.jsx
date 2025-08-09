@@ -327,11 +327,11 @@ const Collection = () => {
                 bg="whiteAlpha.100"
                 borderColor="whiteAlpha.200"
               >
-                <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.title}</Chakra.Heading>
+                <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
                 <Chakra.Stack spacing={2}>
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Date:</Chakra.Text> {featuredNft.date}</Chakra.Text>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Topic:</Chakra.Text> {featuredNft.topic}</Chakra.Text>
+                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
                   <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
                     {featuredNft.ownerCount} Owners
                   </Chakra.Button>
@@ -367,11 +367,11 @@ const Collection = () => {
                 bg="whiteAlpha.100"
                 borderColor="whiteAlpha.200"
               >
-                <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.title}</Chakra.Heading>
+                <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
                 <Chakra.Stack spacing={3}>
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Date:</Chakra.Text> {featuredNft.date}</Chakra.Text>
-                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Topic:</Chakra.Text> {featuredNft.topic}</Chakra.Text>
+                  <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
                   <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
                     {featuredNft.ownerCount} Owners
                   </Chakra.Button>
