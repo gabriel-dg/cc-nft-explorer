@@ -12,7 +12,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const brandTitle = useBreakpointValue({ base: 'Alchemy C.C.', md: 'Alchemy Community Call NFT' });
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(true);
   const [debounceId, setDebounceId] = useState(null);
 
   const handleNavClick = (path) => {
@@ -32,7 +32,6 @@ const Navbar = () => {
     const url = text ? `${basePath}?q=${encodeURIComponent(text)}` : basePath;
     navigate(url);
     setIsOpen(false);
-    setIsSearchOpen(false);
   };
 
   const searchPlaceholder = () => {
