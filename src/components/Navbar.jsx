@@ -217,14 +217,6 @@ const Navbar = () => {
                 {item.label}
               </Chakra.Button>
             ))}
-            <Chakra.Button
-              leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-              onClick={toggleColorMode}
-              size="lg"
-              variant="solid"
-            >
-              {colorMode === "light" ? "Dark Mode" : "Light Mode"}
-            </Chakra.Button>
           </Chakra.VStack>
         </Chakra.Box>
       )}
