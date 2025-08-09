@@ -205,7 +205,7 @@ const Leaderboard = () => {
                   isNumeric
                   cursor="pointer"
                   color="brand.accent"
-                  _hover={{ color: 'cyan.300', textDecoration: 'underline' }}
+                  _hover={{ color: 'gray.300', textDecoration: 'underline' }}
                   onClick={() => handleNFTClick(owner)}
                 >
                   <AnimatedNumber value={owner.count} />
@@ -268,7 +268,7 @@ const Leaderboard = () => {
             border="2px solid"
             borderColor="brand.accent"
             color="white"
-            _focus={{ borderColor: 'brand.accent', boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)' }}
+            _focus={{ borderColor: 'brand.accent', boxShadow: '0 0 0 2px rgba(156, 163, 175, 0.35)' }}
           >
             <option value={10}>10 / page</option>
             <option value={20}>20 / page</option>

@@ -14,7 +14,7 @@ const theme = extendTheme({
     brand: {
       primary: '#6366f1', // Purple glow
       secondary: '#8b5cf6', // Lighter purple
-      accent: '#06b6d4', // Cyan for neon effect
+      accent: '#9CA3AF', // Muted gray accent
       dark: '#0e0b27', // Dark purple background
       darker: '#16213e', // Darker purple
       darkest: '#0f3460', // Darkest purple
@@ -84,11 +84,9 @@ const theme = extendTheme({
       variants: {
         neon: {
           color: 'brand.accent',
-          textShadow: '0 0 5px rgba(6, 182, 212, 0.6)',
         },
         glow: {
           color: 'white',
-          textShadow: '0 0 8px rgba(255, 255, 255, 0.6)',
         },
       },
     },
@@ -137,7 +135,7 @@ const theme = extendTheme({
             color: 'white',
             _focus: {
               borderColor: 'brand.accent',
-              boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)',
+              boxShadow: '0 0 0 2px rgba(156, 163, 175, 0.35)',
             },
             _placeholder: {
               color: 'whiteAlpha.600',
