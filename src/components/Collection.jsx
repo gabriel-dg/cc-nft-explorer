@@ -477,18 +477,33 @@ const Collection = () => {
               {"<"}
             </Chakra.Button>
             
-            {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
-              const page = i + 1;
-              return (
-                <Chakra.Button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  variant={currentPage === page ? "glow" : "neon"}
-                >
-                  {page}
-                </Chakra.Button>
+            {(() => {
+              const windowSize = 3;
+              const windowStart = Math.max(
+                1,
+                windowSize * Math.floor((currentPage - 1) / windowSize) + 1
               );
-            })}
+              const windowEnd = Math.min(totalPages, windowStart + windowSize - 1);
+              return Array.from(
+                { length: windowEnd - windowStart + 1 },
+                (_, i) => {
+                  const page = windowStart + i;
+                  return (
+                    <Chakra.Button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      variant={currentPage === page ? "glow" : "neon"}
+                      color={currentPage === page ? "white" : "whiteAlpha.700"}
+                      fontWeight={currentPage === page ? "bold" : "normal"}
+                      pointerEvents={currentPage === page ? "none" : "auto"}
+                      aria-current={currentPage === page ? "page" : undefined}
+                    >
+                      {page}
+                    </Chakra.Button>
+                  );
+                }
+              );
+            })()}
             
             <Chakra.Button
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
