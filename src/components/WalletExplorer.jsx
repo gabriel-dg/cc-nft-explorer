@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as Chakra from '@chakra-ui/react';
 import { useColorMode } from '@chakra-ui/react';
 import { alchemy, CONTRACT_ADDRESS, mainnetAlchemy } from '../config/alchemy';
@@ -6,7 +7,7 @@ import { useENS } from '../context/ENSContext';
 import { useNFTData } from '../hooks/useNFTData';
 import NFTCard from './NFTCard';
 import NFTCardSkeleton from './NFTCardSkeleton';
-import { debounce } from '../utils/helpers';
+// import { debounce } from '../utils/helpers';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { getPolygonScanUrl } from '../utils/constants';
 
@@ -18,10 +19,12 @@ const WalletExplorer = () => {
   const [resolvedENS, setResolvedENS] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   const { lookupENS } = useENS();
+  const location = useLocation();
   const { loading, error, fetchNFTData } = useNFTData();
 
-  const handleSearch = async () => {
-    if (!searchInput.trim()) return;
+  const handleSearch = async (inputValue) => {
+    const query = (inputValue ?? searchInput).trim();
+    if (!query) return;
     
     setNfts([]);
     setResolvedAddress(null);
@@ -29,27 +32,35 @@ const WalletExplorer = () => {
     setHasSearched(true);
 
     const result = await fetchNFTData(async () => {
-      let searchAddress = searchInput;
+      let searchAddress = query;
       let ensName = null;
+      const isHexAddress = /^0x[a-fA-F0-9]{40}$/i.test(query);
 
-      if (!searchInput.startsWith('0x')) {
+      if (!isHexAddress) {
         try {
-          const address = await mainnetAlchemy.core.resolveName(searchInput);
+          const address = await mainnetAlchemy.core.resolveName(query);
           if (address) {
             searchAddress = address;
-            setResolvedENS(searchInput);
+            setResolvedENS(query);
             setResolvedAddress(address);
           } else {
             throw new Error('ENS name not found');
           }
         } catch (err) {
           console.warn('ENS resolution failed, trying as address:', err);
+          if (isHexAddress) {
+            searchAddress = query;
+            setResolvedAddress(searchAddress);
+          } else {
+            throw err;
+          }
         }
       } else {
         ensName = await lookupENS(searchAddress);
+        // Siempre mostrar la dirección buscada, aunque no tenga ENS
+        setResolvedAddress(searchAddress);
         if (ensName) {
           setResolvedENS(ensName);
-          setResolvedAddress(searchAddress);
         }
       }
 
@@ -71,46 +82,43 @@ const WalletExplorer = () => {
           date,
           topic
         };
-      }).sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
+      }).sort((a, b) => parseInt(a.tokenId, 10) - parseInt(b.tokenId, 10));
     });
 
     if (result) setNfts(result);
   };
 
-  const debouncedSearch = debounce(handleSearch, 500);
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
+  // const debouncedSearch = debounce(handleSearch, 500);
 
   const totalNFTs = nfts.reduce((acc, nft) => acc + parseInt(nft.balance), 0);
+
+  // Read search from URL (?q=...)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('q') || '';
+    setSearchInput(q);
+    if (q.trim()) {
+      (async () => {
+        await handleSearch(q);
+      })();
+    } else {
+      // Clear results when query is empty
+      setHasSearched(false);
+      setNfts([]);
+      setResolvedAddress(null);
+      setResolvedENS(null);
+    }
+  }, [location.search]);
 
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2}>Wallet Explorer</Chakra.Heading>
+        <Chakra.Heading size="md" mb={2}>Wallet Explorer</Chakra.Heading>
         <Chakra.Text color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} mb={6}>
           Enter an address or ENS name to view their NFTs
         </Chakra.Text>
 
-        <Chakra.HStack spacing={4}>
-          <Chakra.Input
-            placeholder="Address (0x...) or ENS name"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            size="lg"
-          />
-          <Chakra.Button
-            onClick={handleSearch}
-            size="lg"
-            isLoading={loading}
-          >
-            Search
-          </Chakra.Button>
-        </Chakra.HStack>
+        {/* Search moved to header */}
       </Chakra.Box>
 
       {error && (
@@ -130,22 +138,28 @@ const WalletExplorer = () => {
             bg={colorMode === 'dark' ? 'purple.900' : 'purple.50'} 
             borderRadius="md"
           >
-            <Chakra.HStack>
-              <Chakra.Text fontWeight="bold">Address:</Chakra.Text>
+            <Chakra.Stack direction={{ base: 'column', sm: 'row' }} spacing={2} align={{ base: 'flex-start', sm: 'center' }}>
+              <Chakra.Text fontWeight="bold" flexShrink={0}>Address:</Chakra.Text>
               <Chakra.Tooltip label="Click to view on Polygonscan">
                 <Chakra.Link
                   href={getPolygonScanUrl(resolvedAddress || searchInput)}
                   isExternal
-                  color="purple.500"
+                  color="purple.300"
+                  maxW="full"
                 >
                   <Chakra.Code 
                     bg={colorMode === 'dark' ? 'gray.700' : 'gray.100'}
+                    maxW="full"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                    display="block"
                   >
                     {resolvedAddress || searchInput}
                   </Chakra.Code>
                 </Chakra.Link>
               </Chakra.Tooltip>
-            </Chakra.HStack>
+            </Chakra.Stack>
             {resolvedENS && (
               <Chakra.HStack>
                 <Chakra.Text fontWeight="bold">ENS Name:</Chakra.Text>

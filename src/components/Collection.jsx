@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import * as Chakra from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import { alchemy, CONTRACT_ADDRESS } from "../config/alchemy";
@@ -9,7 +10,10 @@ import { useNFTData } from "../hooks/useNFTData";
 import AnimatedNumber from "./AnimatedNumber";
 import ErrorRetry from "./ErrorRetry";
 import { LoadingProgress } from "./LoadingProgress";
-import { getPolygonScanUrl } from "../utils/constants";
+import { getPolygonScanUrl, getOpenSeaUrl } from "../utils/constants";
+import { motion } from 'framer-motion';
+
+const MotionBox = motion(Chakra.Box);
 
 const Collection = () => {
   const [nfts, setNfts] = useState([]);
@@ -20,15 +24,52 @@ const Collection = () => {
   const [ensLoadingComplete, setEnsLoadingComplete] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const itemsPerPage = 10;
 
   const { isOpen, onOpen, onClose } = Chakra.useDisclosure();
   const { lookupENS, getCachedENS, isInCache } = useENS();
   const { loading, error, fetchNFTData } = useNFTData();
   const { colorMode } = useColorMode();
+  const location = useLocation();
 
   useEffect(() => {
     fetchNFTs();
   }, []);
+
+  useEffect(() => {
+    // Reset to first page when search changes
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Read search query from URL (?q=...) reactively
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const raw = params.get('q') || '';
+    const q = raw.trim().toLowerCase();
+    setSearchQuery(raw);
+    const filtered = nfts.filter((nft) => {
+      const title = (nft.title || '').toLowerCase();
+      const topic = (nft.topic || '').toLowerCase();
+      const tokenIdHex = String(nft.tokenId || '').toLowerCase();
+      let tokenIdDec = '';
+      try {
+        tokenIdDec = String(parseInt(nft.tokenId, 16));
+      } catch {}
+      return (
+        (q && (
+          title.includes(q) ||
+          topic.includes(q) ||
+          tokenIdHex.includes(q) ||
+          (tokenIdDec && tokenIdDec.includes(q)) ||
+          (`token #${tokenIdDec}`).includes(q) ||
+          (`token #${tokenIdHex}`).includes(q)
+        ))
+      );
+    });
+    setFilteredNfts(q ? filtered : nfts);
+  }, [location.search, nfts]);
 
   const fetchMetadataFromUri = async (uri) => {
     try {
@@ -63,6 +104,12 @@ const Collection = () => {
         });
       });
 
+      const resolveIpfs = (uri) => {
+        if (!uri) return null;
+        if (uri.startsWith('ipfs://')) return `https://ipfs.io/ipfs/${uri.slice(7)}`;
+        return uri;
+      };
+
       const processedNfts = nftResponse.nfts
         .map((nft, index) => {
           setLoadedCount(index + 1);
@@ -75,6 +122,9 @@ const Collection = () => {
             attributes.find((attr) => attr.trait_type === "Topic")?.value ||
             "Unknown Topic";
 
+          const animationFromMeta = nft.raw?.metadata?.animation_url || nft.raw?.metadata?.animationUrl || null;
+          const animationUrl = resolveIpfs(animationFromMeta);
+
           return {
             tokenId: nft.tokenId,
             image:
@@ -86,6 +136,9 @@ const Collection = () => {
             ownerCount: ownerCountMap.get(nft.tokenId) || 0,
             date,
             topic,
+            animationUrl,
+            raw: nft.raw || null,
+            media: nft.media || [],
           };
         })
         .sort((a, b) => parseInt(b.tokenId) - parseInt(a.tokenId));
@@ -97,6 +150,31 @@ const Collection = () => {
       setNfts(result);
       setFilteredNfts(result);
     }
+  };
+
+  const handleSearch = (value) => {
+    const q = value.trim().toLowerCase();
+    setSearchQuery(value);
+    const filtered = nfts.filter((nft) => {
+      const title = (nft.title || '').toLowerCase();
+      const topic = (nft.topic || '').toLowerCase();
+      const tokenIdHex = String(nft.tokenId || '').toLowerCase();
+      let tokenIdDec = '';
+      try {
+        tokenIdDec = String(parseInt(nft.tokenId, 16));
+      } catch {}
+      return (
+        (q && (
+          title.includes(q) ||
+          topic.includes(q) ||
+          tokenIdHex.includes(q) ||
+          (tokenIdDec && tokenIdDec.includes(q)) ||
+          (`token #${tokenIdDec}`).includes(q) ||
+          (`token #${tokenIdHex}`).includes(q)
+        ))
+      );
+    });
+    setFilteredNfts(q ? filtered : nfts);
   };
 
   const handleOwnersClick = async (nft) => {
@@ -170,14 +248,24 @@ const Collection = () => {
     }
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredNfts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentNfts = filteredNfts.slice(startIndex, endIndex);
+
+  // Featured NFT (first one) and the rest
+  const featuredNft = currentNfts[0];
+  const otherNfts = currentNfts.slice(1);
+
   if (loading) {
     return (
       <Chakra.Container py={10}>
         <Chakra.Box mb={8}>
-          <Chakra.Heading size="lg" mb={2}>
+          <Chakra.Heading size="md" mb={2} variant="glow">
             Collection Explorer
           </Chakra.Heading>
-          <Chakra.Text color="gray.600">
+          <Chakra.Text variant="neon">
             Browse all NFTs in the collection
           </Chakra.Text>
         </Chakra.Box>
@@ -202,52 +290,238 @@ const Collection = () => {
   return (
     <Chakra.Container py={10}>
       <Chakra.Box mb={8}>
-        <Chakra.Heading size="lg" mb={2}>
+        <Chakra.Heading size="md" mb={2} variant="glow">
           Collection Explorer
         </Chakra.Heading>
-        <Chakra.Text color={colorMode === "dark" ? "gray.300" : "gray.600"}>
+        <Chakra.Text variant="neon">
           Browse all NFTs in the collection
         </Chakra.Text>
       </Chakra.Box>
 
-      <Chakra.Box mb={6}>
-        <Chakra.Input
-          placeholder="Search by Token ID or Title..."
-          onChange={(e) => {
-            const value = e.target.value.toLowerCase().trim();
-            // Always filter from the original nfts array
-            const filtered = nfts.filter(
-              (nft) =>
-                nft.title.toLowerCase().includes(value) ||
-                nft.tokenId.includes(value)
-            );
-            setFilteredNfts(filtered);
-          }}
-          size="lg"
-          bg={colorMode === "dark" ? "gray.700" : "white"}
-          borderColor={colorMode === "dark" ? "gray.600" : "gray.200"}
-          _hover={{
-            borderColor: colorMode === "dark" ? "gray.500" : "gray.300",
-          }}
-        />
-      </Chakra.Box>
+      {/* Search moved to header */}
 
-      <Chakra.SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-        {filteredNfts.map((nft) => (
-          <NFTCard
-            key={nft.tokenId}
-            nft={nft}
-            onClick={handleOwnersClick}
-            showOwners={true}
-          />
-        ))}
-      </Chakra.SimpleGrid>
+      {/* Featured Section (Image left, Info right on desktop; stacked on mobile) */}
+      {featuredNft && (
+        <Chakra.Box mb={8}>
+          {/* Mobile: stacked */}
+          <Chakra.Box display={{ base: "block", lg: "none" }}>
+            <Chakra.VStack spacing={4} align="stretch">
+              <Chakra.Box
+                borderWidth="0"
+                borderRadius="xl"
+                overflow="hidden"
+                bg="transparent"
+              >
+                <Chakra.AspectRatio ratio={1}>
+                  <Chakra.Box position="relative" width="100%" height="100%">
+                    <Chakra.Link
+                      href={getOpenSeaUrl(CONTRACT_ADDRESS, featuredNft.tokenId)}
+                      isExternal
+                      _hover={{ opacity: 0.9 }}
+                      display="block"
+                      width="100%"
+                      height="100%"
+                    >
+                      {featuredNft.animationUrl ? (
+                        <Chakra.Box
+                          as="video"
+                          src={featuredNft.animationUrl}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          controls
+                          width="100%"
+                          height="100%"
+                        />
+                      ) : featuredNft.image ? (
+                        <Chakra.Image src={featuredNft.image} alt={featuredNft.title} objectFit="cover" w="100%" h="100%" />
+                      ) : (
+                        <Chakra.Center bg="gray.100" h="100%">No Media</Chakra.Center>
+                      )}
+                    </Chakra.Link>
+                  </Chakra.Box>
+                </Chakra.AspectRatio>
+              </Chakra.Box>
+              <Chakra.Box
+                borderWidth="0"
+                borderRadius="xl"
+                p={4}
+                bg="transparent"
+              >
+                 <Chakra.Heading size="md" mb={2} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
+                 <Chakra.HStack spacing={2} mb={2}>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="xs" fontWeight="bold" noOfLines={1}>{featuredNft.topic}</Chakra.Text>
+                   </Chakra.Box>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="xs" fontWeight="bold" noOfLines={1}>{featuredNft.date}</Chakra.Text>
+                   </Chakra.Box>
+                 </Chakra.HStack>
+                 <Chakra.Stack spacing={2}>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
+                  {/* Debug accordion removed for production */}
+                  <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
+                    {featuredNft.ownerCount} Owners
+                  </Chakra.Button>
+                  <Chakra.Button as={Chakra.Link} href={getOpenSeaUrl(CONTRACT_ADDRESS, featuredNft.tokenId)} isExternal size="sm">
+                    View on OpenSea
+                  </Chakra.Button>
+                </Chakra.Stack>
+              </Chakra.Box>
+            </Chakra.VStack>
+          </Chakra.Box>
 
+          {/* Desktop: two columns */}
+          <Chakra.Box display={{ base: "none", lg: "block" }}>
+            <Chakra.Grid templateColumns="1fr 1fr" gap={6}>
+              <Chakra.Box
+                borderWidth="0"
+                borderRadius="xl"
+                overflow="hidden"
+                bg="transparent"
+                w="75%"
+                mx="auto"
+              >
+                <Chakra.AspectRatio ratio={1}>
+                  <Chakra.Box position="relative" width="100%" height="100%">
+                    <Chakra.Link
+                      href={getOpenSeaUrl(CONTRACT_ADDRESS, featuredNft.tokenId)}
+                      isExternal
+                      _hover={{ opacity: 0.9 }}
+                      display="block"
+                      width="100%"
+                      height="100%"
+                    >
+                      {featuredNft.animationUrl ? (
+                        <Chakra.Box
+                          as="video"
+                          src={featuredNft.animationUrl}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          controls
+                          width="100%"
+                          height="100%"
+                        />
+                      ) : featuredNft.image ? (
+                        <Chakra.Image src={featuredNft.image} alt={featuredNft.title} objectFit="cover" w="100%" h="100%" />
+                      ) : (
+                        <Chakra.Center bg="gray.100" h="100%">No Media</Chakra.Center>
+                      )}
+                    </Chakra.Link>
+                  </Chakra.Box>
+                </Chakra.AspectRatio>
+              </Chakra.Box>
+              <Chakra.Box
+                borderWidth="0"
+                borderRadius="xl"
+                p={6}
+                bg="transparent"
+              >
+                 <Chakra.Heading size="lg" mb={3} noOfLines={2}>{featuredNft.topic}</Chakra.Heading>
+                 <Chakra.HStack spacing={2} mb={3}>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="sm" fontWeight="bold" noOfLines={1}>{featuredNft.topic}</Chakra.Text>
+                   </Chakra.Box>
+                   <Chakra.Box bg="whiteAlpha.200" px={2} py={1} borderRadius="md">
+                     <Chakra.Text fontSize="sm" fontWeight="bold" noOfLines={1}>{featuredNft.date}</Chakra.Text>
+                   </Chakra.Box>
+                 </Chakra.HStack>
+                 <Chakra.Stack spacing={3}>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">ID:</Chakra.Text> {featuredNft.tokenId}</Chakra.Text>
+                   <Chakra.Text><Chakra.Text as="span" fontWeight="bold">Title:</Chakra.Text> {featuredNft.title}</Chakra.Text>
+                  <Chakra.Button size="sm" onClick={() => handleOwnersClick(featuredNft)}>
+                    {featuredNft.ownerCount} Owners
+                  </Chakra.Button>
+                  <Chakra.Button as={Chakra.Link} href={getOpenSeaUrl(CONTRACT_ADDRESS, featuredNft.tokenId)} isExternal size="sm">
+                    View on OpenSea
+                  </Chakra.Button>
+                </Chakra.Stack>
+              </Chakra.Box>
+            </Chakra.Grid>
+          </Chakra.Box>
+        </Chakra.Box>
+      )}
+
+      {/* Remaining NFTs Grid */}
+      {otherNfts.length > 0 && (
+        <Chakra.Box mb={8}>
+          <Chakra.Heading size="md" mb={4} variant="glow">
+            More NFTs
+          </Chakra.Heading>
+          <Chakra.SimpleGrid columns={{ base: 1, md: 2, lg: 3, xl: 4 }} spacing={6}>
+            {otherNfts.map((nft) => (
+              <NFTCard
+                key={nft.tokenId}
+                nft={nft}
+                onClick={handleOwnersClick}
+                showOwners={true}
+              />
+            ))}
+          </Chakra.SimpleGrid>
+        </Chakra.Box>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Chakra.Box display="flex" justifyContent="center" mt={8}>
+          <Chakra.ButtonGroup spacing={2}>
+            <Chakra.Button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              isDisabled={currentPage === 1}
+              variant="neon"
+            >
+              {"<"}
+            </Chakra.Button>
+            
+            {(() => {
+              const windowSize = 3;
+              const windowStart = Math.max(
+                1,
+                windowSize * Math.floor((currentPage - 1) / windowSize) + 1
+              );
+              const windowEnd = Math.min(totalPages, windowStart + windowSize - 1);
+              return Array.from(
+                { length: windowEnd - windowStart + 1 },
+                (_, i) => {
+                  const page = windowStart + i;
+                  return (
+                    <Chakra.Button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      variant={currentPage === page ? "glow" : "neon"}
+                      color={currentPage === page ? "white" : "whiteAlpha.700"}
+                      fontWeight={currentPage === page ? "bold" : "normal"}
+                      pointerEvents={currentPage === page ? "none" : "auto"}
+                      aria-current={currentPage === page ? "page" : undefined}
+                    >
+                      {page}
+                    </Chakra.Button>
+                  );
+                }
+              );
+            })()}
+            
+            <Chakra.Button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              isDisabled={currentPage === totalPages}
+              variant="neon"
+            >
+              {">"}
+            </Chakra.Button>
+          </Chakra.ButtonGroup>
+        </Chakra.Box>
+      )}
+
+      {/* Modal for NFT Owners */}
       <Chakra.Modal isOpen={isOpen} onClose={onClose} size="xl">
         <Chakra.ModalOverlay />
         <Chakra.ModalContent maxW={{ base: "90vw", md: "800px" }}>
           <Chakra.ModalHeader>
-            <Chakra.Text noOfLines={1}>
+            <Chakra.Text noOfLines={1} variant="glow">
               Owners of {selectedNft?.title}
             </Chakra.Text>
           </Chakra.ModalHeader>
@@ -289,7 +563,7 @@ const Collection = () => {
                             <Chakra.Link
                               href={getPolygonScanUrl(owner.address)}
                               isExternal
-                              color="purple.500"
+                              color="brand.accent"
                               _hover={{ textDecoration: "underline" }}
                             >
                               {owner.address}
@@ -301,7 +575,7 @@ const Collection = () => {
                             <Chakra.Spinner size="xs" />
                           ) : owner.ensName ? (
                             <Chakra.Text
-                              color="purple.500"
+                              color="brand.accent"
                               overflow="hidden"
                               textOverflow="ellipsis"
                               whiteSpace="nowrap"
@@ -325,7 +599,7 @@ const Collection = () => {
             )}
           </Chakra.ModalBody>
           <Chakra.ModalFooter>
-            <Chakra.Button onClick={onClose}>Close</Chakra.Button>
+            <Chakra.Button variant="neon" onClick={onClose}>Close</Chakra.Button>
           </Chakra.ModalFooter>
         </Chakra.ModalContent>
       </Chakra.Modal>
