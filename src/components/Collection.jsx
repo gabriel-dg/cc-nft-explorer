@@ -83,17 +83,25 @@ const Collection = () => {
 
   const fetchNFTs = async () => {
     const result = await fetchNFTData(async () => {
-      const [nftResponse, ownersResponse] = await Promise.all([
-        alchemy.nft.getNftsForContract(CONTRACT_ADDRESS, {
+      // Fetch all NFTs with pagination
+      let allNfts = [];
+      let pageKey = undefined;
+      
+      do {
+        const nftResponse = await alchemy.nft.getNftsForContract(CONTRACT_ADDRESS, {
           pageSize: 100,
           omitMetadata: false,
-        }),
-        alchemy.nft.getOwnersForContract(CONTRACT_ADDRESS, {
-          withTokenBalances: true,
-        }),
-      ]);
+          pageKey: pageKey,
+        });
+        allNfts = [...allNfts, ...nftResponse.nfts];
+        pageKey = nftResponse.pageKey;
+      } while (pageKey);
 
-      setTotalCount(nftResponse.nfts.length);
+      const ownersResponse = await alchemy.nft.getOwnersForContract(CONTRACT_ADDRESS, {
+        withTokenBalances: true,
+      });
+
+      setTotalCount(allNfts.length);
       setLoadedCount(0);
 
       const ownerCountMap = new Map();
@@ -110,7 +118,7 @@ const Collection = () => {
         return uri;
       };
 
-      const processedNfts = nftResponse.nfts
+      const processedNfts = allNfts
         .map((nft, index) => {
           setLoadedCount(index + 1);
 
