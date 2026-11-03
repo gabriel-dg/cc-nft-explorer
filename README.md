@@ -40,7 +40,7 @@ The application uses two Alchemy instances:
 ## Prerequisites
 
 - Node.js (v14 or higher)
-- npm (v6 or higher)
+- pnpm (v9 or higher)
 - An Alchemy API key (get one at [alchemy.com](https://www.alchemy.com))
 
 ## Installation
@@ -49,7 +49,7 @@ The application uses two Alchemy instances:
 
 2. Install dependencies
 ```bash
-npm install
+pnpm install
 ```
 
 3. Create a `.env` file in the root directory with the following variables:
@@ -61,7 +61,7 @@ CONTRACT_ADDRESS=
 
 4. Start the development server
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The application will be available at `http://localhost:5173`
@@ -70,12 +70,12 @@ The application will be available at `http://localhost:5173`
 
 To create a production build:
 ```bash
-npm run build
+pnpm build
 ```
 
 To preview the production build:
 ```bash
-npm run preview
+pnpm preview
 ```
 
 ## Project Structure
